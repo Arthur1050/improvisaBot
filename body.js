@@ -100,11 +100,6 @@ module.exports = corpo = async (bot, menssagem) => {
             } catch(err) {console.log(err); return travando = 0}
         }
 
-        if (isGroupMsg && quotedMsg && !isComando) {
-            const isBotQuoted = await quotedMsg.author == numeBot + '@c.us'
-            if (isBotQuoted) await bot.reply(from, '"/menu" para mais informações.', id)
-        }
-
         if (!isGroupMsg && !isComando) {await bot.reply(from, 'Olá, isso não é um comando.\nCertifique-se de que esteja colocando o "/" no começo.\nUse /menu para mais informações.\nExemplo:', id).then(async () => {bot.sendText(from, '/menu')})}
 
         if (!isGroupMsg && !isDono && isTravaZap) {await bot.contactBlock(user).then( async () => { bot.sendText(Dono, text.randomTrava(user)) }) }

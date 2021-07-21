@@ -41,7 +41,7 @@ const start = async (bot = new Client()) => {
     const listanegra = JSON.parse(fs.readFileSync('./lib/jsons/listanegra.json'))
     const autor = event.who
     const botnumber = await bot.getHostNumber() + '@c.us'
-    const vulgobot = autor.includes(botnumber)
+    const vulgobot = await autor.includes(botnumber)
     const onBlacklist = listanegra.includes(event.who)
     const infoautor = await bot.getContact(event.who)
     const trueNumber = autor.startsWith('55')
@@ -68,7 +68,7 @@ const start = async (bot = new Client()) => {
           newadd = 1
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
-          console.log('teste0')
+          console.log(botnumber, autor)
           const image = await new canva.Welcome()
           .setUsername(pushname)
           .setDiscriminator(event.who.substring(6, 10))
@@ -90,14 +90,12 @@ const start = async (bot = new Client()) => {
           //.setOpacity("border", 0,4)
           .setBackground("https://scontent.fuba1-1.fna.fbcdn.net/v/t1.6435-9/132191072_203990704609701_7100112499351820023_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=8631f5&_nc_ohc=HTmnTsR8ypMAX9cGbyE&_nc_ht=scontent.fuba1-1.fna&oh=69a39acb309f344a3e4d1a591b88b458&oe=60F7DDD9")
           .toAttachment();
-          console.log('teste1')
-          console.log('teste2')
-          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname, name))
+          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname))
           newadd = 0
           console.log('Entrou no grupo aqui')
         }
       }
-      else if (event.action == 'remove' && newexit == 0){
+      else if (event.action == 'remove' && newexit == 0 && !vulgobot){
         newexit = 1
         var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
