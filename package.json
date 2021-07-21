@@ -1,0 +1,28 @@
+{
+  "name": "ImprovisaBOT",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "BOT da Improvisado (exclusivo)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Arthur T.",
+  "license": "MIT",
+  "dependencies": {
+    "@open-wa/wa-automate": "^4.11.1",
+    "@vitalets/google-translate-api": "^7.0.0",
+    "axios": "^0.21.1",
+    "chalk": "^4.1.1",
+    "discord-canvas": "^1.4.1",
+    "mal-scraper": "^2.11.3",
+    "moment-timezone": "^0.5.33",
+    "one-liner-joke": "^1.2.2",
+    "remove-accents": "^0.4.2",
+    "sharp": "^0.28.3",
+    "translate": "^1.2.3"
+  },
+  "directories": {
+    "lib": "lib"
+  }
+}
