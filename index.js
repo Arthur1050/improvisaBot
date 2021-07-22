@@ -48,7 +48,7 @@ const start = async (bot = new Client()) => {
     let {pushname, verifiedName, formattedName} = infoautor
     autorname = pushname || verifiedName || formattedName
     const gChat = await bot.getChatById(event.chat)
-    const {contact, groupMetadata, name} = gChat
+    const {contact, groupMetadata, name} = await gChat
     try {
       if (event.action == 'add'){
         /*if (onBlacklist && !vulgobot) {
@@ -67,8 +67,10 @@ const start = async (bot = new Client()) => {
         else if (!onBlacklist && !vulgobot && newadd == 0) {
           newadd = 1
           var perfil = await bot.getProfilePicFromServer(event.who)
-          if (perfil == '' || perfil == 'undefined') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
+          if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
           console.log(botnumber, autor)
+          console.log(event.who)
+          console.log(perfil)
           const image = await new canva.Welcome()
           .setUsername(pushname)
           .setDiscriminator(event.who.substring(6, 10))
@@ -88,9 +90,10 @@ const start = async (bot = new Client()) => {
           //.setOpacity("discriminator-box", 0,6)
           //.setOpacity("message-box", 0,6)
           //.setOpacity("border", 0,4)
-          .setBackground("https://scontent.fuba1-1.fna.fbcdn.net/v/t1.6435-9/132191072_203990704609701_7100112499351820023_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=8631f5&_nc_ohc=HTmnTsR8ypMAX9cGbyE&_nc_ht=scontent.fuba1-1.fna&oh=69a39acb309f344a3e4d1a591b88b458&oe=60F7DDD9")
+          .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
-          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname))
+          console.log('Teset1')
+          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname, name))
           newadd = 0
           console.log('Entrou no grupo aqui')
         }
@@ -98,7 +101,8 @@ const start = async (bot = new Client()) => {
       else if (event.action == 'remove' && newexit == 0 && !vulgobot){
         newexit = 1
         var perfil = await bot.getProfilePicFromServer(event.who)
-          if (perfil == '' || perfil == 'undefined') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
+          if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
+          console.log(perfil)
           const picbemvindo = await new canva.Goodbye().setUsername(pushname)
           .setDiscriminator(event.who.substring(6, 10))
           .setMemberCount(groupMetadata.participants.length)
@@ -116,8 +120,9 @@ const start = async (bot = new Client()) => {
           //.setOpacity("discriminator-box", 0.6)
           //.setOpacity("message-box", 0.6)
           //.setOpacity("border", 0.4)
-          .setBackground('https://scontent.fuba1-1.fna.fbcdn.net/v/t1.6435-9/132191072_203990704609701_7100112499351820023_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=8631f5&_nc_ohc=HTmnTsR8ypMAX9cGbyE&_nc_ht=scontent.fuba1-1.fna&oh=69a39acb309f344a3e4d1a591b88b458&oe=60F7DDD9')
+          .setBackground('https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png')
           .toAttachment()
+          console.log('Teset2')
           await bot.sendFile(event.chat, `data:image/png;base64,${picbemvindo.toBuffer().toString('base64')}`, `picgodbye.png`, text.goodBye())
           newexit = 0
           console.log('saiu aqui')

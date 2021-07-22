@@ -146,9 +146,9 @@ module.exports = corpo = async (bot, menssagem) => {
                         try {
                             const mentionRest = await textRest.slice(textRest.indexOf(' ') + 1) //Se tiver alguém mencionado, é armazenado o texto pós menção na variavél "mentionRest"
                               if(!quotedMsg) {var motivo = arrayMsg.length == 2? 'Não declarado' : mentionRest} else {var motivo = arrayMsg.length == 1? 'Não declarado' : textRest} // Se declado, armazena o motivo na variavél "motivo". Senão for declarado, armazena "Não declarado", na variavél "motivo".
-                              if(quotedMsg) {var banido = quotedMsg.sender.pushname} else {var banido = mentionedJidList[0].pushname} // Pega o nome banido e armazena na varivel "banido"
+                              if(quotedMsg) {var banido = await quotedMsg.sender.pushname} else {let banidoMencion = await bot.getContact(mentionedJidList[0]); var banido = banidoMencion.pushname} // Pega o nome banido e armazena na varivel "banido"
                             const alvo = await quotedMsg ? quotedMsg.author : mentionedJidList[0]
-                            await bot.removeParticipant(from, alvo).then(async () => { await bot.reply(from, text.finish(banido, motivo), id) })
+                            await bot.removeParticipant(idGroup, alvo).then(async () => { await bot.reply(from, text.finish(banido, motivo), id) })
                         } catch (err) { bot.reply(from, text.fail(), id); console.log(err) }
                     }
                 }
@@ -164,7 +164,7 @@ module.exports = corpo = async (bot, menssagem) => {
                     if(!quotedMsg) return bot.reply(from, 'Marque a mensagem de quem queira retornar ao grupo.', id)
                     if (quotedMsg) {
                         try{
-                            await bot.addParticipant(from, quotedMsg.author).then(async () => {await bot.sendTextWithMentions(from, text.unBan(quotedMsg.author))})
+                            await bot.addParticipant(idGroup, quotedMsg.author).then(async () => {await bot.sendTextWithMentions(from, text.unBan(quotedMsg.author))})
                         }catch(err) {bot.reply(from, text.fail(), id), console.log(err)}
                     }
                 }
