@@ -23,7 +23,7 @@ const start = async (bot = new Client()) => {
     await bot.getAmountOfLoadedMessages().then(async msg => {
       if (msg >= 3000) {
         console.log('->MSG 3k<-  Mais de 3 mil mensagens foram armazenadas...')
-        console.log(color('Limpando...', 'yellow'))
+        console.log('Limpando...')
         await bot.cutMsgCache()
         console.log('->Limpeza concluida!!<-')
       }
