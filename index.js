@@ -58,8 +58,8 @@ const start = async (bot = new Client()) => {
           console.log(`->ListaNegra<-  ${autorname} cujo numero: ${event.who.replace('@c.us')} - Foi banido pois pertencia a Lista negra`)
         }*/
         if (!trueNumber && !vulgobot) {
-          await bot.sendTextWithMentions(event.chat, text.numerofake(event))
-          await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
+          //await bot.sendTextWithMentions(event.chat, text.numerofake(event))
+          //await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
           await bot.contactBlock(event.who)
           console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
 

@@ -73,7 +73,8 @@ module.exports = corpo = async (bot, menssagem) => {
                 if (chats.match(new RegExp(/(https:\/\/chat.whatsapp.com)/gi))){
                     linkprocess = 1; 
                     const msgLink = await bot.inviteInfo(chats)
-                    if (msgLink) {
+                    console.log(msgLink)
+                    if (msgLink && !msgLink.owner === '553499532444@c.us') {
                         console.log('Um link de outro grupo foi detectado...')
                         await bot.sendTextWithMentions( from, text.sendConviteLink(user))
                         await bot.removeParticipant(idGroup, user).then(async () => {bot.sendText(from, text.warn()); return linkprocess = 0})                    }
