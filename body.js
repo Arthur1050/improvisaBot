@@ -8,6 +8,8 @@ const malScraper = require('mal-scraper')
 const translator = require('@vitalets/google-translate-api')
 const {get, default: axios} = require('axios')
 const requestJoke = require('one-liner-joke')
+const ytdl = require('ytdl-core')
+const ytSearch = require('yt-search')
 
 //Interruptores
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0
@@ -342,6 +344,10 @@ module.exports = corpo = async (bot, menssagem) => {
             case 'ideia':
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto.', id)}
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
+            break
+
+            case 'song':
+                const resyt = ytSearch('call 40').then((resyt) => {})
             break
         }
     }catch(err) {console.log(err)}
