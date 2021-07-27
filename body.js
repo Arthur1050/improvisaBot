@@ -326,7 +326,11 @@ module.exports = corpo = async (bot, menssagem) => {
                         params: {
                             type: 'twopart',
                             format: 'json',
-                            lang: 'en'
+                            lang: 'en',
+                            flags: {
+                                nsfw: 'fasle',
+                                racist: 'false'
+                            }
                         },
                         headers: {
                             'x-rapidapi-key': '8299cf66damsh643f877ad4e03d0p10fabcjsn174e5c373432',
