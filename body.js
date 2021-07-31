@@ -3,6 +3,7 @@ const rmaccents = require('remove-accents')
 const {decryptMedia, getConfigFromProcessEnv} = require('@open-wa/wa-automate')
 const chalk = require('chalk')
 const moment = require('moment-timezone')
+const momentTIme = require('moment')
 const sharp = require('sharp')
 const malScraper = require('mal-scraper')
 const translator = require('@vitalets/google-translate-api')
@@ -13,7 +14,7 @@ const ytSearch = require('yt-search')
 const fs = require('fs')
 
 //Interruptores
-var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0
+var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0; var song = 0
 
 //Avulsos
 const text = require('./lib/text/textsend.js');
@@ -22,6 +23,14 @@ const { width, height } = require('@open-wa/wa-automate/dist/config/puppeteer.co
 const { fit, format } = require('sharp')
 const RGB = (texto, Color) => {return !Color ? chalk.green(texto) : chalk.keyword(Color)(texto)}
 
+/*function formatTemp (temps){
+    var tempToSeconds = temps/60
+    if (!Number.isInteger(tempToSeconds)){
+        var segundos = tempToSeconds.slice(2)/100*60
+        tempToSeconds = `${tempToSeconds}:${segundos}`
+    }
+    return tempToSeconds
+}*/
 
 module.exports = corpo = async (bot, menssagem) => {
          const {type, id, from, t, sender, author, isGroupMsg, chat, chatId, caption, isMedia, mimetype, quotedMsg, quotedMsgObj, mentionedJidList} = menssagem
@@ -347,29 +356,45 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'ideia':
-                if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto.', id)}
+                if (arrayMsg.length = 1) {return bot.reply(from, 'Comando incompleto.', id)}
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
             break
 
             case 'song':
+                if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
+                if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
-                    const resyt = await ytSearch('avicii wake me up').then((resyt) => { return resyt })
+                    song = 1
+                    const resyt = await ytSearch(textRest).then((resyt) => { return resyt })
                     const songUrl = resyt.videos[0].url
                     const infoSong = await ytdl.getInfo(songUrl)
-                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio' }).pipe(fs.createWriteStream('audio.mp3', { encoding: 'base64' }))
+                    const basicInfoSong = await ytdl.getBasicInfo(songUrl)
+                    var titleSong = basicInfoSong.videoDetails.title
+                    var tempSong = basicInfoSong.videoDetails.lengthSeconds
+                    var viewsSong = basicInfoSong.videoDetails.viewCount
+                    var dateSong = basicInfoSong.videoDetails.publishDate
+                    var urlThumbSong = basicInfoSong.videoDetails.thumbnails[4].url
+                    if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
+                    await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
+                    console.log(basicInfoSong.videoDetails)
+                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
                        writeStrem.on('finish', async () => { 
-                           await bot.sendPtt(from, 'audio.mp3', id)
-                           await bot.sendAudio(from, 'audio.mp3')
-                           fs.rm('audio.mp3', {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
-                       writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id) })
+                           await bot.sendPtt(from, `${titleSong}.mp3`, id)
+                           await bot.sendAudio(from, `${titleSong}.mp3`)
+                           fs.rm(`${titleSong}.mp3`, {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
+                       writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
                        console.log(writeStrem.writableFinished)
                        setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
-                } catch (err) { console.log(err) }
+                } catch (err) {return console.log(err), song = 0 }
             break
 
             case 'clean':
                 if (isDono) {await bot.clearAllChats().then(async () => {await bot.reply(from, 'Limpeza concluida!', id)}).catch(async (err) => {bot.reply(from, 'Algo deu errado na execução do processo', id), console.log(err)})
                 } else {bot.reply(from, 'Comando exclussivo do dono', id)}
+            break
+
+            case 'snaptube':
+                bot.reply(from, text.snaptube(), id)
             break
         }
     }catch(err) {console.log(err)}

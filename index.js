@@ -107,7 +107,7 @@ const start = async (bot = new Client()) => {
           .setMemberCount(groupMetadata.participants.length)
           .setGuildName(name)
           .setAvatar(perfil) /*"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"*/
-          .setText("title", "ADEUS")
+          .setText("title", "F")
           .setText("message", "Acaba de abandonar o(a) {server}")
           .setText("member-count", "Era o membro Nº {count}")
           .setColor("border", "#00100C")
