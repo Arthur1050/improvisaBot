@@ -374,14 +374,15 @@ module.exports = corpo = async (bot, menssagem) => {
                     var viewsSong = basicInfoSong.videoDetails.viewCount
                     var dateSong = basicInfoSong.videoDetails.publishDate
                     var urlThumbSong = basicInfoSong.videoDetails.thumbnails[4].url
+                    console.log(basicInfoSong)
                     if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
                     await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
-                    console.log(basicInfoSong.videoDetails)
-                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
-                       writeStrem.on('finish', async () => { 
+                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio', filter: 'audioonly' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
+                       await writeStrem.on('finish', async () => { 
                            await bot.sendPtt(from, `${titleSong}.mp3`, id)
-                           await bot.sendAudio(from, `${titleSong}.mp3`)
+                           await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
                            fs.rm(`${titleSong}.mp3`, {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
+                           song = 0
                        writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
                        console.log(writeStrem.writableFinished)
                        setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
