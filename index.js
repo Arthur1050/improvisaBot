@@ -18,14 +18,13 @@ const start = async (bot = new Client()) => {
     if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') await kill.forceRefocus()
   } )
   
-  //Limpa cache a cada 3000 mensagens
   bot.onMessage( async menssagem => {
     await bot.getAmountOfLoadedMessages().then(async msg => {
-      if (msg >= 3000) {
-        console.log('->MSG 3k<-  Mais de 3 mil mensagens foram armazenadas...')
-        console.log('Limpando...')
+      if (msg >= 2000) {
+        try{
         await bot.cutMsgCache()
-        console.log('->Limpeza concluida!!<-')
+        await bot.cutChatCache()
+        }catch(err) {console.log(`Tentativa de apagar o cache falhou...\n ${err}`), bot.sendText(Dono, 'Tentei limpar o cachê, mas falhei.')}
       }
     })
     await corpo(bot, menssagem)

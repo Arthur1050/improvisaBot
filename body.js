@@ -10,6 +10,7 @@ const {get, default: axios} = require('axios')
 const requestJoke = require('one-liner-joke')
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
+const fs = require('fs')
 
 //Interruptores
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0
@@ -18,7 +19,7 @@ var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0
 const text = require('./lib/text/textsend.js');
 const { Color, yellow } = require('chalk');
 const { width, height } = require('@open-wa/wa-automate/dist/config/puppeteer.config')
-const { fit } = require('sharp')
+const { fit, format } = require('sharp')
 const RGB = (texto, Color) => {return !Color ? chalk.green(texto) : chalk.keyword(Color)(texto)}
 
 
@@ -351,7 +352,24 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'song':
-                const resyt = ytSearch('call 40').then((resyt) => {})
+                try {
+                    const resyt = await ytSearch('avicii wake me up').then((resyt) => { return resyt })
+                    const songUrl = resyt.videos[0].url
+                    const infoSong = await ytdl.getInfo(songUrl)
+                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio' }).pipe(fs.createWriteStream('audio.mp3', { encoding: 'base64' }))
+                       writeStrem.on('finish', async () => { 
+                           await bot.sendPtt(from, 'audio.mp3', id)
+                           await bot.sendAudio(from, 'audio.mp3')
+                           fs.rm('audio.mp3', {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
+                       writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id) })
+                       console.log(writeStrem.writableFinished)
+                       setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
+                } catch (err) { console.log(err) }
+            break
+
+            case 'clean':
+                if (isDono) {await bot.clearAllChats().then(async () => {await bot.reply(from, 'Limpeza concluida!', id)}).catch(async (err) => {bot.reply(from, 'Algo deu errado na execução do processo', id), console.log(err)})
+                } else {bot.reply(from, 'Comando exclussivo do dono', id)}
             break
         }
     }catch(err) {console.log(err)}
