@@ -328,6 +328,7 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'piada':
+                return bot.reply(from, '_*Indisponivél.*_\nCertas "piadas" me fez tomar essa decisão...🥲 Mas não se preocupem! Em breve inclementarei um novo meio hehe💅', id)
                 if (piada == 0) {
                     piada = 1
                     var options = {
