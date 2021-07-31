@@ -374,7 +374,6 @@ module.exports = corpo = async (bot, menssagem) => {
                     var viewsSong = basicInfoSong.videoDetails.viewCount
                     var dateSong = basicInfoSong.videoDetails.publishDate
                     var urlThumbSong = basicInfoSong.videoDetails.thumbnails[4].url
-                    console.log(basicInfoSong)
                     if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
                     await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
                     const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio', filter: 'audioonly' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
