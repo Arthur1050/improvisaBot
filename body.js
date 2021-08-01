@@ -376,27 +376,37 @@ module.exports = corpo = async (bot, menssagem) => {
                     var dateSong = basicInfoSong.videoDetails.publishDate
                     var urlThumbSong = basicInfoSong.videoDetails.thumbnails[3].url
                     //console.log(basicInfoSong.videoDetails)
-                    if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
-                    await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
-                    const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio', filter: 'audioonly' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
-                       await writeStrem.on('finish', async () => { 
-                           await bot.sendPtt(from, `${titleSong}.mp3`, id)
-                           await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
-                           fs.rm(`${titleSong}.mp3`, {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
-                           song = 0
-                       writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
-                       console.log(writeStrem.writableFinished)
-                       setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
+                        if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
+                        await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
+                        const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio', filter: 'audioonly' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
+                        await writeStrem.on('finish', async () => { 
+                            await bot.sendPtt(from, `${titleSong}.mp3`, id)
+                            await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
+                            fs.rm(`${titleSong}.mp3`, {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
+                            song = 0
+                        writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
+                    console.log(writeStrem.writableFinished)
+                    setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
                 } catch (err) {return console.log(err), song = 0 }
             break
 
             case 'clean':
                 if (isDono) {await bot.clearAllChats().then(async () => {await bot.reply(from, 'Limpeza concluida!', id)}).catch(async (err) => {bot.reply(from, 'Algo deu errado na execução do processo', id), console.log(err)})
-                } else {bot.reply(from, 'Comando exclussivo do dono', id)}
+                            } else {bot.reply(from, 'Comando exclussivo do dono', id)}
             break
 
             case 'snaptube':
                 bot.reply(from, text.snaptube(), id)
+            break
+
+            case 'setperfil':
+                if (!isDono) {return bot.reply(from, 'Você não parece ser meu dono🤔', id)}
+                if (!isImagem && !isQuotedImage) {return bot.reply(from, 'Não foi enviado nem marcado nenhuma imagem.', id)}
+                    var perfilRequest = quotedMsg? quotedMsg : menssagem
+                    var perfilBuff = await decryptMedia(perfilRequest, uaOverride)
+                    var perfilbase64 = await perfilBuff.toString('base64')
+                    var perfilMime = await quotedMsg? quotedMsg.mimetype : mimetype
+                    await bot.setProfilePic(`data:${perfilMime};base64,${perfilbase64}`).then(async () => {await bot.reply(from, 'Perfil alterado com sucesso!', id)})
             break
         }
     }catch(err) {console.log(err)}

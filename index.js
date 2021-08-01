@@ -68,9 +68,6 @@ const start = async (bot = new Client()) => {
           newadd = 1
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
-          console.log(botnumber, autor)
-          console.log(event.who)
-          console.log(perfil)
           const image = await new canva.Welcome()
           .setUsername(pushname)
           .setDiscriminator(event.who.substring(6, 10))
@@ -92,7 +89,6 @@ const start = async (bot = new Client()) => {
           //.setOpacity("border", 0,4)
           .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
-          console.log('Teset1')
           await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname, name))
           newadd = 0
           console.log('Entrou no grupo aqui')
@@ -132,12 +128,13 @@ const start = async (bot = new Client()) => {
   })
   
   bot.onIncomingCall(async call => {
+    if(!call.peerJid == Dono){
     try{
       console.log('->CALL<- Estão me ligando...')
     await bot.sendText(call.peerJid, text.onCall())
     await setTimeout(() => {bot.contactBlock(call.peerJid)}, 2000)
     await bot.sendText(Dono, `Tentaram me ligar. Felizmente, já bloqueei.\nwa.me/+${call.peerJid.replace('@c.us', ' ')}`)
-    }catch(err) {return console.log(err), bot.sendText(Dono, `Houve uma tentativa de me ligar. Porém, não consegui bloquear.\nwa.me/+${call.peerJid.replace('@c.us', ' ')}`)}
+    }catch(err) {return console.log(err), bot.sendText(Dono, `Houve uma tentativa de me ligar. Porém, não consegui bloquear.\nwa.me/+${call.peerJid.replace('@c.us', ' ')}`)}}
   })
 }
 
