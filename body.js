@@ -365,7 +365,6 @@ module.exports = corpo = async (bot, menssagem) => {
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
                 if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
-                    song = 1
                     const resyt = await ytSearch(textRest).then((resyt) => { return resyt })
                     const songUrl = resyt.videos[0].url
                     const infoSong = await ytdl.getInfo(songUrl)
@@ -376,9 +375,11 @@ module.exports = corpo = async (bot, menssagem) => {
                     var dateSong = basicInfoSong.videoDetails.publishDate
                     var urlThumbSong = basicInfoSong.videoDetails.thumbnails[3].url
                     //console.log(basicInfoSong.videoDetails)
-                        if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id)}
+                        if (parseInt(tempSong) > 300) {return bot.reply(from, 'Musica maior que 5 minutos🥵.', id), song = 0}
+                        song = 1
                         await bot.sendFileFromUrl(from, `${urlThumbSong}`, `${titleSong}`, text.infoSongRequest(titleSong, tempSong, dateSong, viewsSong), id)
                         const writeStrem = await ytdl.downloadFromInfo(infoSong, { quality: 'highestaudio', filter: 'audioonly' }).pipe(fs.createWriteStream(`${titleSong}.mp3`, { encoding: 'base64' }))
+                        writeStrem.on('open', (fd)=>{console.log(fd), console.log(fd), console.log(fd), console.log(fd), console.log(fd), console.log(fd)})
                         await writeStrem.on('finish', async () => { 
                             await bot.sendPtt(from, `${titleSong}.mp3`, id)
                             await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
@@ -407,6 +408,12 @@ module.exports = corpo = async (bot, menssagem) => {
                     var perfilbase64 = await perfilBuff.toString('base64')
                     var perfilMime = await quotedMsg? quotedMsg.mimetype : mimetype
                     await bot.setProfilePic(`data:${perfilMime};base64,${perfilbase64}`).then(async () => {await bot.reply(from, 'Perfil alterado com sucesso!', id)})
+            break
+
+            case 'eununca':
+                axios.get('https://www.dicionariopopular.com/perguntas-eu-nunca-jogo/', {method:''}).then(async (res) =>{
+                    console.log(res.headers)
+                })
             break
         }
     }catch(err) {console.log(err)}

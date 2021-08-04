@@ -23,8 +23,7 @@ const start = async (bot = new Client()) => {
       if (msg >= 2000) {
         try{
         await bot.cutMsgCache()
-        await bot.cutChatCache()
-        await bot.sendText(Dono, 'Acabo de limpar o cache de mensagens e chats com sucesso!')
+        await bot.cutChatCache().then(async ()=>{await bot.sendText(Dono, 'Acabo de limpar o cache de mensagens e chats com sucesso!')})
         }catch(err) {console.log(`Tentativa de apagar o cache falhou...\n ${err}`), bot.sendText(Dono, 'Tentei limpar o cachê, mas falhei.')}
       }
     })
