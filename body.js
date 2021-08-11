@@ -12,7 +12,6 @@ const requestJoke = require('one-liner-joke')
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
 const fs = require('fs')
-const commands = require('./src/commands')
 
 //Interruptores
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0; var song = 0
