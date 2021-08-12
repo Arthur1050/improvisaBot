@@ -362,7 +362,6 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'song':
-                commands
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
                 if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
