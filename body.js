@@ -363,7 +363,7 @@ module.exports = corpo = async (bot, menssagem) => {
 
             case 'song':
                 commands
-                /*if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
+                if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
                 if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
                     const resyt = await ytSearch(textRest).then((resyt) => { return resyt })
@@ -390,7 +390,7 @@ module.exports = corpo = async (bot, menssagem) => {
                         writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
                     console.log(writeStrem.writableFinished)
                     setTimeout(() => { console.log(writeStrem.writableFinished) }, 5000)
-                } catch (err) {return console.log(err), song = 0 }*/
+                } catch (err) {return console.log(err), song = 0 }
             break
 
             case 'clean':
