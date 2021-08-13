@@ -382,8 +382,7 @@ module.exports = corpo = async (bot, menssagem) => {
                         await writeStrem.on('finish', async () => { 
                             const readFile = await fs.readFileSync(`${titleSong}.mp3`)
                             await bot.sendPtt(from, `${titleSong}.mp3`, id)
-                            await bot.sendFile(from, `data:audio/mpeg;base64,${readFile.toString('base64')}`, id)
-                            await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
+                            await bot.sendFile(from, `data:audio/mpeg;base64,${readFile.toString('base64')}`, id)                            await bot.sendFile(from, `${titleSong}.mp3`, `${titleSong}.mp3`, null)
                             fs.rm(`${titleSong}.mp3`, {recursive:true}, ()=>{console.log('Arquivo excluido')}) })
                             song = 0
                         writeStrem.on('error', () => { bot.reply(from, 'Houve um erro com o download...\nTente novamente.', id), song = 0 })
