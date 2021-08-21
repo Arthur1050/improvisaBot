@@ -12,6 +12,7 @@ const requestJoke = require('one-liner-joke')
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
 const fs = require('fs')
+const command = require('./src/ponte')
 
 //Interruptores
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0; var song = 0
@@ -38,7 +39,7 @@ module.exports = corpo = async (bot, menssagem) => {
          const Dono = "553499532444@c.us"
          //Type: Tipo da mensagem. Ex: Voice, video, image, location, etc...
          //Body: É o corpo da mensagem
-         //Caption: É o texto que vem na lgenda de fotos e videos
+         //Caption: É o texto que vem na lgenda de fotos e 
          const chats = (type === 'chat') ? body : ((type === 'image' || type === 'video')) ? caption : ''
          body = (type === 'chat' && body.startsWith('/')) ? body : (((type === 'image' || type === 'video') && caption) && caption.startsWith('/')) ? caption : ''
          meio = body.slice(1).trim().split(/ +/).shift().toLowerCase()
@@ -189,10 +190,9 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'mod':
-                if (isAdemesGroup){
-                if (isGroupMsg) {bot.reply(from, text.mod(), id)} else bot.reply(from, text.cmdGroups(), id)
-            }else return bot.reply(from, 'Você não é adm.', id)
-
+                if (isGroupMsg){
+                    if (isAdemesGroup) {bot.reply(from, text.mod(), id)} else bot.reply(from, 'Você não é adm.', id)
+                }else return bot.reply(from, text.cmdGroups(), id)
             break
 
             case 'apagar':
@@ -362,6 +362,8 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'song':
+                /*let song = require('./src/commands/song.js')
+                song.song()*/
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
                 if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
@@ -414,6 +416,22 @@ module.exports = corpo = async (bot, menssagem) => {
                 axios.get('https://www.dicionariopopular.com/perguntas-eu-nunca-jogo/', {method:''}).then(async (res) =>{
                     console.log(res.headers)
                 })
+            break
+
+            case 'hi':
+                if (arrayMsg.length == 1) {return bot.reply(from, 'Vamos, diga algo...\n\n"/hi *(MENSAGEM)*)"', id)}
+                var optionssimsimi = {
+                    method: 'GET',
+                    url: 'https://api.simsimi.net/v1',
+                    params:{
+                        text:`${textRest}`,
+                        lang:'pt'
+                    }
+                    }
+                    axios.request(optionssimsimi).then((res)=>{
+                        console.log(res.data)
+                        bot.reply(from, `${res.data.success}`, id)
+                    })
             break
         }
     }catch(err) {console.log(err)}
