@@ -7,7 +7,13 @@ const corpo = require("./body")
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
 
+//Pegando o arquivo msgCount.JSON e transformando em um obj
+const msgCountJson = fs.readFileSync('./lib/jsons/msgCount.json')
+const msgCount = JSON.parse(msgCountJson)
+
+// Apaga a pasta de logs do navegador caso exista
 if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: true})}
+
 
 const start = async (bot = new Client()) => {
   console.log('O Arthur comanda saporra')
@@ -15,10 +21,12 @@ const start = async (bot = new Client()) => {
   //Força recarregamento
   bot.onStateChanged (async state => {
     console.log('->Oto caindo aqui<- Se liga ->', state)
-    if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') await kill.forceRefocus()
+      if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') await bot.forceRefocus()
   } )
   
   bot.onMessage( async menssagem => {
+
+    //Apaga o cachê após acumular mais de 2000 msg
     await bot.getAmountOfLoadedMessages().then(async msg => {
       if (msg >= 2000) {
         try{
@@ -27,6 +35,35 @@ const start = async (bot = new Client()) => {
         }catch(err) {console.log(`Tentativa de apagar o cache falhou...\n ${err}`), bot.sendText(Dono, 'Tentei limpar o cachê, mas falhei.')}
       }
     })
+
+    //Registra quantidade de mensagens
+    
+    /*for (i=0; i < msgCount.length || msgCount.length == 0;) {
+      console.log(i)
+      if (msgCount.length == 0) {
+        return msgCount.push({
+          id: `${menssagem.sender.id}`, //Adiciona o id do sender ao obj
+          msgs: 1
+        })
+      }
+
+      if (!msgCount[i].id == menssagem.sender.id) {
+        msgCount.push({
+          id: `${menssagem.sender.id}`, //Não está sendo adicionado o id de outro usuario
+          msgs: 1
+        })    
+      }
+
+      if (msgCount[i].id == menssagem.sender.id) {
+        msgCount[i].msgs = msgCount[i].msgs + 1
+      }
+      i++
+    }
+    console.log(msgCount.length)
+    console.log(msgCount)*/
+
+
+    //Manuseio de mensagens
     await corpo(bot, menssagem)
   })
 
@@ -48,6 +85,8 @@ const start = async (bot = new Client()) => {
     autorname = pushname || verifiedName || formattedName
     const gChat = await bot.getChatById(event.chat)
     const {contact, groupMetadata, name} = await gChat
+    console.log(event)
+    console.log(infoautor)
     try {
       if (event.action == 'add'){
         /*if (onBlacklist && !vulgobot) {
@@ -72,7 +111,7 @@ const start = async (bot = new Client()) => {
           .setDiscriminator(event.who.substring(6, 10))
           .setMemberCount(groupMetadata.participants.length)
           .setGuildName(name)
-          .setAvatar(perfil)   /*"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"*/
+          .setAvatar(perfil)
           .setText("title", `BEM VINDO(A)`)
           .setText("message", `Você está no {server}`)
           .setText("member-count", `Você é membro Nº {count}`)
@@ -82,18 +121,14 @@ const start = async (bot = new Client()) => {
           .setColor("message-box", "#00100C")
           .setColor("title", "#6577AF")
           .setColor("avatar", "#00100C")
-          //.setOpacity("username-box", 0,6)
-          //.setOpacity("discriminator-box", 0,6)
-          //.setOpacity("message-box", 0,6)
-          //.setOpacity("border", 0,4)
           .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
-          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(pushname, name))
+          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(infoautor.pushname, name))
           newadd = 0
           console.log('Entrou no grupo aqui')
         }
       }
-      else if (event.action == 'remove' && newexit == 0 && !vulgobot){
+      /*else if (event.action == 'remove' && newexit == 0 && !vulgobot){
         newexit = 1
         var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
@@ -102,7 +137,7 @@ const start = async (bot = new Client()) => {
           .setDiscriminator(event.who.substring(6, 10))
           .setMemberCount(groupMetadata.participants.length)
           .setGuildName(name)
-          .setAvatar(perfil) /*"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"*/
+          .setAvatar(perfil)
           .setText("title", "F")
           .setText("message", "Acaba de abandonar o(a) {server}")
           .setText("member-count", "Era o membro Nº {count}")
@@ -111,17 +146,13 @@ const start = async (bot = new Client()) => {
           .setColor('discriminator-box', "#00100C")
           .setColor("message-box", "#00100C")
           .setColor("title", "#6577AF")
-          //.setOpacity("username-box", 0.6)
-          //.setOpacity("discriminator-box", 0.6)
-          //.setOpacity("message-box", 0.6)
-          //.setOpacity("border", 0.4)
           .setBackground('https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png')
           .toAttachment()
           console.log('Teset2')
           await bot.sendFile(event.chat, `data:image/png;base64,${picbemvindo.toBuffer().toString('base64')}`, `picgodbye.png`, text.goodBye())
           newexit = 0
           console.log('saiu aqui')
-      }
+      }*/
     }
     catch (err) {console.log(err); newadd = 0; newexit = 0}
   })
@@ -138,5 +169,5 @@ const start = async (bot = new Client()) => {
 }
 
 
-//create(start).then((bot) => start(bot))
+//Inicia o bot
 create(options(start)).then((bot) => start(bot)).catch((err) => console.error(err))

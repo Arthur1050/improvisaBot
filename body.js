@@ -69,6 +69,7 @@ module.exports = corpo = async (bot, menssagem) => {
         const isGif = type === 'gif'
         const isQuotedGif = quotedMsg && quotedMsg.type === 'gif'
         const isVoice = type === 'audio'
+        const isQuotedMsg = quotedMsg == null? false : true
         
 
         //Anti Pornografia (INACABADO)
@@ -298,8 +299,8 @@ module.exports = corpo = async (bot, menssagem) => {
                     if (!isBotAdeme) return bot.reply(from, text.noSoyAdm(), id)
                     if (arrayMsg[1] == 'help') {return await bot.sendFileFromUrl(from, 'https://i.ibb.co/bRmxHV7/imagem-2021-07-20-225713.png', 'tempbanHelp.png', text.tempbanHelp(), id), bot.sendFileFromUrl(from, 'https://i.ibb.co/4NrcmRW/imagem-2021-07-20-230151.png', 'tempbanHelp.png', 'Depois de 1 minuto, o bot automaticamente retorna o membro.')}
                     if (!quotedMsg && mentionedJidList.length == 0) { return bot.reply(from, 'Mencione ou marque a mensagem de alguém.', id) } //Reply Error
-                    if (quotedMsg && arrayMsg.length > 2 || arrayMsg.length < 2) { return bot.reply(from, text.cmdError('Softban'), id) } //Reply Error
-                    if (!quotedMsg && arrayMsg.length > 3 || arrayMsg.length < 3) { return bot.reply(from, text.cmdError('Softban'), id) } //Reply Error
+                    if (isQuotedMsg && !arrayMsg.length == 2) { return bot.reply(from, text.cmdError('tempban'), id) } //Reply Error
+                    if (!isQuotedMsg && !arrayMsg.length == 3) { return bot.reply(from, text.cmdError('tempban'), id) } //Reply Error
                     const alvo = await quotedMsg ? quotedMsg.author : mentionedJidList[0]
                     const temp = await quotedMsg ? arrayMsg[1] : arrayMsg[2]
                     const tempFormat = await parseInt(temp)
@@ -361,8 +362,10 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'song':
-                /*let song = require('./src/commands/song.js')
-                song.song()*/
+                /*let songteste = await ytdl('https://www.youtube.com/watch?v=KwM4yOwMls4').
+                songteste.on('resume', async (res) => { 
+                    bot.sendFile(from, songteste,'songtest.mp3', ' ', id).catch((err)=>{console.log(err)})
+                })*/
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto!', id)}
                 if (song == 1) {return bot.reply(from, 'Já estou baixando um.\nTente novamente daqui a pouco.', id)}
                 try {
