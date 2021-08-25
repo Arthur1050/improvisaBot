@@ -24,6 +24,7 @@ const start = async (bot = new Client()) => {
       if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') await bot.forceRefocus()
   } )
   
+  // Ouve as mesnagens recebidas
   bot.onMessage( async menssagem => {
 
     //Apaga o cachê após acumular mais de 2000 msg
@@ -37,42 +38,33 @@ const start = async (bot = new Client()) => {
     })
 
     //Registra quantidade de mensagens
-    
-    /*for (i=0; i < msgCount.length || msgCount.length == 0;) {
-      console.log(i)
-      if (msgCount.length == 0) {
-        return msgCount.push({
-          id: `${menssagem.sender.id}`, //Adiciona o id do sender ao obj
-          msgs: 1
-        })
-      }
-
-      if (!msgCount[i].id == menssagem.sender.id) {
-        msgCount.push({
-          id: `${menssagem.sender.id}`, //Não está sendo adicionado o id de outro usuario
-          msgs: 1
-        })    
-      }
-
-      if (msgCount[i].id == menssagem.sender.id) {
-        msgCount[i].msgs = msgCount[i].msgs + 1
-      }
-      i++
+    function msgRegister(){
+      return msgCount.push({
+        id: `${menssagem.sender.id}`,
+        msgs: 1
+      })
     }
-    console.log(msgCount.length)
-    console.log(msgCount)*/
 
+    if (msgCount.length == 0) {
+      msgRegister() //Registra o id do sender caso o arquivo esteja vázio (sem objetos)
+    }
+    else {
+      //Testa se o id do sender existe no arquivo JSON
+      for (var i=0; msgCount.length > i;) {var isIdExist = msgCount[i].id == menssagem.sender.id? true : false; if (isIdExist){break}; i++}
+      if (!isIdExist) {
+        msgRegister()  //Registra o id do sender caso não exista
+      }
+      else{
+        msgCount[i].msgs = msgCount[i].msgs + 1 // Aumenta +1 de msg do sender caso exista
+      }
+    }
+    // Salva as mensagens recebidas no arquivo JSON
+    fs.writeFileSync('./lib/jsons/msgCount.json', JSON.stringify(msgCount))
 
     //Manuseio de mensagens
     await corpo(bot, menssagem)
   })
 
-  bot.onAddedToGroup (async (chat) => {
-    const members = chat.groupMetadata.participants.length
-    await bot.sendText(chat.id, text.novogrupo())
-    console.log(`->NEW GROUP<- Novo grupo (${chat.contact.name}) com ${members} membros`)
-
-    })
   bot.onGlobalParticipantsChanged(async (event) => {
     const listanegra = JSON.parse(fs.readFileSync('./lib/jsons/listanegra.json'))
     const autor = event.who
@@ -81,12 +73,9 @@ const start = async (bot = new Client()) => {
     const onBlacklist = listanegra.includes(event.who)
     const infoautor = await bot.getContact(event.who)
     const trueNumber = autor.startsWith('55')
-    let {pushname, verifiedName, formattedName} = infoautor
-    autorname = pushname || verifiedName || formattedName
+    let autorName = infoautor.pushname || infoautor.name
     const gChat = await bot.getChatById(event.chat)
     const {contact, groupMetadata, name} = await gChat
-    console.log(event)
-    console.log(infoautor)
     try {
       if (event.action == 'add'){
         /*if (onBlacklist && !vulgobot) {
@@ -99,7 +88,7 @@ const start = async (bot = new Client()) => {
           await bot.sendTextWithMentions(event.chat, text.numerofake(event))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
           await bot.contactBlock(event.who)
-          console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
+          return console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
 
         }
         else if (!onBlacklist && !vulgobot && newadd == 0) {
@@ -107,7 +96,7 @@ const start = async (bot = new Client()) => {
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
           const image = await new canva.Welcome()
-          .setUsername(pushname)
+          .setUsername(autorName)
           .setDiscriminator(event.who.substring(6, 10))
           .setMemberCount(groupMetadata.participants.length)
           .setGuildName(name)
@@ -123,17 +112,15 @@ const start = async (bot = new Client()) => {
           .setColor("avatar", "#00100C")
           .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
-          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(infoautor.pushname, name))
+          await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(autorName, name))
           newadd = 0
-          console.log('Entrou no grupo aqui')
         }
       }
-      /*else if (event.action == 'remove' && newexit == 0 && !vulgobot){
+      else if (event.action == 'remove' && newexit == 0 && !vulgobot){
         newexit = 1
         var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
-          console.log(perfil)
-          const picbemvindo = await new canva.Goodbye().setUsername(pushname)
+          const picbemvindo = await new canva.Goodbye().setUsername(autorName)
           .setDiscriminator(event.who.substring(6, 10))
           .setMemberCount(groupMetadata.participants.length)
           .setGuildName(name)
@@ -148,11 +135,9 @@ const start = async (bot = new Client()) => {
           .setColor("title", "#6577AF")
           .setBackground('https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png')
           .toAttachment()
-          console.log('Teset2')
           await bot.sendFile(event.chat, `data:image/png;base64,${picbemvindo.toBuffer().toString('base64')}`, `picgodbye.png`, text.goodBye())
           newexit = 0
-          console.log('saiu aqui')
-      }*/
+      }
     }
     catch (err) {console.log(err); newadd = 0; newexit = 0}
   })
