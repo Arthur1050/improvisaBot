@@ -4,6 +4,7 @@ const canva = require ('discord-canvas')
 const text = require('./lib/text/textsend')
 const options = require('./lib/options')
 const corpo = require("./body")
+const moment = require('moment-timezone')
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
 
@@ -46,6 +47,9 @@ const start = async (bot = new Client()) => {
     }
 
     if (msgCount.length == 0) {
+      msgCount.push({
+        begginDate:`${menssagem.t}` // Registra a data da primeira mensagem registrada
+      })
       msgRegister() //Registra o id do sender caso o arquivo esteja vázio (sem objetos)
     }
     else {
@@ -60,30 +64,32 @@ const start = async (bot = new Client()) => {
     }
     // Salva as mensagens recebidas no arquivo JSON
     fs.writeFileSync('./lib/jsons/msgCount.json', JSON.stringify(msgCount))
+    //console.log('Contando desde: ', moment( msgCount[0].begginDate * 1000).format('DD/MM/YY HH:mm:ss'))
 
     //Manuseio de mensagens
     await corpo(bot, menssagem)
   })
 
   bot.onGlobalParticipantsChanged(async (event) => {
-    const listanegra = JSON.parse(fs.readFileSync('./lib/jsons/listanegra.json'))
+    const bkList = JSON.parse(fs.readFileSync('./lib/jsons/bkList.json'))
+    const onBkList = bkList.includes(event.who)
     const autor = event.who
     const botnumber = await bot.getHostNumber() + '@c.us'
     const vulgobot = await autor.includes(botnumber)
-    const onBlacklist = listanegra.includes(event.who)
     const infoautor = await bot.getContact(event.who)
     const trueNumber = autor.startsWith('55')
     let autorName = infoautor.pushname || infoautor.name
     const gChat = await bot.getChatById(event.chat)
     const {contact, groupMetadata, name} = await gChat
+    console.log(event.who)
     try {
       if (event.action == 'add'){
-        /*if (onBlacklist && !vulgobot) {
-          await bot.sendText(event.chat, text.listanegra())
+        if (onBkList && !vulgobot) {
+          await bot.sendTextWithMentions(event.chat, text.listanegra(autor))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 2000)
           await bot.contactBlock(event.who)
-          console.log(`->ListaNegra<-  ${autorname} cujo numero: ${event.who.replace('@c.us')} - Foi banido pois pertencia a Lista negra`)
-        }*/
+          console.log(`->ListaNegra<-  ${autorName} cujo numero: ${event.who.replace('@c.us')} - Foi banido pois pertencia a Lista negra`)
+        }
         if (!trueNumber && !vulgobot) {
           await bot.sendTextWithMentions(event.chat, text.numerofake(event))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
@@ -91,7 +97,7 @@ const start = async (bot = new Client()) => {
           return console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
 
         }
-        else if (!onBlacklist && !vulgobot && newadd == 0) {
+        else if (!onBkList && !vulgobot && newadd == 0) {
           newadd = 1
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"

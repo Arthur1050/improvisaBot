@@ -435,6 +435,20 @@ module.exports = corpo = async (bot, menssagem) => {
                         bot.reply(from, `${res.data.success}`, id)
                     })
             break
+
+            case 'bklist':
+                if (!isGroupMsg) {return bot.reply(from, text.cmdGroups(), id)}
+                if (!isAdemesGroup) {return bot.reply(from, 'Exclussivo para adms.', id)}
+
+                try {
+                    const bkList = await JSON.parse(fs.readFileSync('./lib/jsons/bkList.json'))
+                    const bkMember = arrayMsg[1] + '@c.us'
+                    await bkList.push(`${bkMember}`)
+                    await fs.writeFileSync('./lib/jsons/bkList.json', JSON.stringify(bkList))
+                    bot.reply(from, 'Numero adicionado à lista negra com sucesso!', id)
+                } catch (err) { bot.reply(from, 'Houve um problema ao executar a ação.', id) }
+
+            break
         }
     }catch(err) {console.log(err)}
 }
