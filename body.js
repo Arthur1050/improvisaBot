@@ -437,12 +437,28 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'bklist':
-                if (!isGroupMsg) {return bot.reply(from, text.cmdGroups(), id)}
-                if (!isAdemesGroup) {return bot.reply(from, 'Exclussivo para adms.', id)}
-
+                //if (!isGroupMsg) {return bot.reply(from, text.cmdGroups(), id)}
+                //if (!isAdemesGroup) {return bot.reply(from, 'Exclussivo para adms.', id)}
                 try {
                     const bkList = await JSON.parse(fs.readFileSync('./lib/jsons/bkList.json'))
                     const bkMember = arrayMsg[1] + '@c.us'
+                    var bkListContent = '📓 ≫ Numeros adicionado à lista negra:\n'
+
+                    // if que envia a lista negra caso o segundo argumento do comando for "list"
+                    if (arrayMsg[1] == 'lista') { 
+                        for (let i = 0; i < bkList.length;) { bkListContent = bkListContent + `\n*${i} )* ` + `_${bkList[i].replace('@c.us', '')}_`; i++ }
+                        return bot.reply(from, bkListContent, id)
+                    }
+
+                    // if para remover um numero do bklist
+                    if (arrayMsg[1] == 'apagar') {
+                        let arrayPosition = parseInt(arrayMsg[2])
+                        if (isNaN(arrayMsg[2])) {return bot.reply(from, 'Isso não é um numero', id)}
+                        bkList.splice(arrayMsg[2], 1)
+                        bot.reply(from, 'Item removido da listinha.', id)
+                        return await fs.writeFileSync('./lib/jsons/bkList.json', JSON.stringify(bkList))
+                    }
+
                     await bkList.push(`${bkMember}`)
                     await fs.writeFileSync('./lib/jsons/bkList.json', JSON.stringify(bkList))
                     bot.reply(from, 'Numero adicionado à lista negra com sucesso!', id)
