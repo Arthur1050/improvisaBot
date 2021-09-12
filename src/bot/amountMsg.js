@@ -16,7 +16,7 @@ module.exports = amountMsg = (msg, bot) =>{
         switch(countMsg[i].msgs){
             
             case 10:
-                congratulations(100)
+                congratulations(10)
             break
 
             case 50:
