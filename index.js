@@ -1,12 +1,13 @@
 const {create, Client, decryptMedia} = require ("@open-wa/wa-automate")
 const fs = require ('fs-extra')
 const canva = require ('discord-canvas')
-const text = require('./lib/text/textsend')
-const options = require('./lib/options')
+const text = require('./src/textsend')
+const options = require('./src/options')
 const corpo = require("./body")
 const moment = require('moment-timezone')
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
+const amountMsg = require('./src/bot/amountMsg')
 
 //Pegando o arquivo msgCount.JSON e transformando em um obj
 const msgCountJson = fs.readFileSync('./lib/jsons/msgCount.json')
@@ -66,8 +67,12 @@ const start = async (bot = new Client()) => {
     fs.writeFileSync('./lib/jsons/msgCount.json', JSON.stringify(msgCount))
     //console.log('Contando desde: ', moment( msgCount[0].begginDate * 1000).format('DD/MM/YY HH:mm:ss'))
 
+
     //Manuseio de mensagens
     await corpo(bot, menssagem)
+
+    //Verificar quantidade de mensagens
+    amountMsg(menssagem, bot)
   })
 
   bot.onGlobalParticipantsChanged(async (event) => {

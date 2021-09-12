@@ -17,7 +17,7 @@ const fs = require('fs')
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0; var song = 0
 
 //Avulsos
-const text = require('./lib/text/textsend.js');
+const text = require('./src/textsend');
 const { Color, yellow } = require('chalk');
 const { width, height } = require('@open-wa/wa-automate/dist/config/puppeteer.config')
 const { fit, format } = require('sharp')
@@ -317,11 +317,11 @@ module.exports = corpo = async (bot, menssagem) => {
                 if (isGroupMsg){
                     if (!isAdemesGroup) {return bot.reply(from, text.isMembroComum(), id)}
                     if (!isBotAdeme) {return bot.reply(from, text.noSoyAdm(), id)}
-                    if (arrayMsg.length == 1) {return bot.reply(from, text.cmdError('Add'), id) }
+                    if (arrayMsg.length !== 2) {return bot.reply(from, text.cmdError('Add'), id) }
                     if (isNaN(arrayMsg[1])) {return bot.reply(from, text.cmdError('Add'), id)}
-                    const membro = await arrayMsg[1] + '@c.us'
                     console.log(membro)
                     try {
+                        const membro = await arrayMsg[1] + '@c.us'
                         bot.addParticipant(idGroup, membro)
                     } catch (err) { bot.reply(form, 'Não foi possível completar a ação.', id) }
                 } else bot.reply(from, text.cmdGroups(), id)
@@ -465,6 +465,16 @@ module.exports = corpo = async (bot, menssagem) => {
                 } catch (err) { bot.reply(from, 'Houve um problema ao executar a ação.', id) }
 
             break
+
+            case 'teste':
+                let teste = {
+                    headers: {
+                        'referer':'https://www.osvigaristas.com.br/charadas/',
+                        'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+                        'Content-Type':'application/json'
+                    }
+                }
+                var charadaPage = axios.get('https://www.osvigaristas.com.br/charadas/', teste).then((dat) => {console.log(dat.data)})
         }
     }catch(err) {console.log(err)}
 }
