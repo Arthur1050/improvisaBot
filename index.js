@@ -9,6 +9,10 @@ const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
 const amountMsg = require('./src/bot/amountMsg')
 
+//Criar arquivos JSONS caso nn tenha
+if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/bkList.json',[])}
+if (!fs.existsSync('./lib/jsons/msgCount.json')) {fs.outputJSONSync('./lib/jsons/msgCount.json',[])}
+
 //Pegando o arquivo msgCount.JSON e transformando em um obj
 const msgCountJson = fs.readFileSync('./lib/jsons/msgCount.json')
 const msgCount = JSON.parse(msgCountJson)
