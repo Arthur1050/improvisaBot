@@ -12,6 +12,9 @@ const requestJoke = require('one-liner-joke')
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
 const fs = require('fs')
+const HTML = require('parse5')
+const request = require('request')
+const cheerio = require('cheerio')
 
 //Interruptores
 var photoprocess = 0; var linkprocess = 0; var travando =0; var piada = 0; var song = 0
@@ -467,14 +470,15 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'teste':
-                let teste = {
-                    headers: {
-                        'referer':'https://www.osvigaristas.com.br/charadas/',
-                        'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-                        'Content-Type':'application/json'
-                    }
-                }
-                var charadaPage = axios.get('https://www.osvigaristas.com.br/charadas/', teste).then((dat) => {console.log(dat.data)})
-        }
-    }catch(err) {console.log(err)}
+                request('https://www.osvigaristas.com.br/charadas/', function(err, res, body) {
+                    if (err) {console.log(`Error = ${err}`)}
+
+                    let $ = cheerio.load(body)
+
+                    $('.riddle div').each(() => {
+                        console.log($(this).find('.question').text())
+                    })
+                })
+            break
+    }}catch(err) {console.log(err)}
 }

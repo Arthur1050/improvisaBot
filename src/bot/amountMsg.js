@@ -9,33 +9,30 @@ module.exports = amountMsg = (msg, bot) =>{
         bot.reply(msg.from, `Muito bem!! Você acaba de completar ${amountMsg} mensagens no nosso grupo`, msg.id)
         } catch(err){console.log(err)}
     }
+    // Verifica se o sender está apto a ser parabenizado
+    function searchMsg(countMsgs, countId, meta) {
+        if (countMsgs == meta && countId == msg.sender.id) {
+            congratulations(meta)
+        }
+    }
 
     //Verifica a quantidade de mensagens e parabeniza
     try{
-    for (var i = 0; i < countMsg.length; i++) {
-        switch(countMsg[i].msgs){
-            
-            case 10:
-                congratulations(10)
-            break
-
-            case 50:
-                congratulations(50)
-            break
-
-            case 100:
-                congratulations(100)
-            break
-
-            case 200:
-                congratulations(200)
-            break
-
-            case 300:
-                congratulations(300)
-            break
-
+    for (let i in countMsg) {
+        if (i > 0) {
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 10)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 50)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 100)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 150)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 200)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 250)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 300)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 400)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 500)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 750)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 1000)
+            }
         }
-    }
-} catch(err) {console.log(err)}
+    
+    } catch(err) {console.log(err)}
 }
