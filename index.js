@@ -32,6 +32,7 @@ const start = async (bot = new Client()) => {
   
   // Ouve as mesnagens recebidas
   bot.onMessage( async menssagem => {
+    console.log(menssagem.quotedMsg)
 
     //Apaga o cachê após acumular mais de 2000 msg
     await bot.getAmountOfLoadedMessages().then(async msg => {
@@ -79,35 +80,42 @@ const start = async (bot = new Client()) => {
     amountMsg(menssagem, bot)
   })
 
-  bot.onGlobalParticipantsChanged(async (event) => {
+  bot.onGlobalParticipantsChanged(async event => {
     const bkList = JSON.parse(fs.readFileSync('./lib/jsons/bkList.json'))
     const onBkList = bkList.includes(event.who)
     const autor = event.who
     const botnumber = await bot.getHostNumber() + '@c.us'
-    const vulgobot = await autor.includes(botnumber)
+    const vulgobot = autor == botnumber
     const infoautor = await bot.getContact(event.who)
-    const trueNumber = autor.startsWith('55')
     let autorName = infoautor.pushname || infoautor.name
     const gChat = await bot.getChatById(event.chat)
     const {contact, groupMetadata, name} = await gChat
-    console.log(event.who)
+    console.log(event)
+
     try {
       if (event.action == 'add'){
+        const trueNumber = autor.startsWith('55')
+
+        //Caso esteja na black List
         if (onBkList && !vulgobot) {
           await bot.sendTextWithMentions(event.chat, text.listanegra(autor))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 2000)
           await bot.contactBlock(event.who)
           console.log(`->ListaNegra<-  ${autorName} cujo numero: ${event.who.replace('@c.us')} - Foi banido pois pertencia a Lista negra`)
         }
-        if (!trueNumber && !vulgobot) {
+
+        //Remove Numeros fakes
+        /*if (!trueNumber && !vulgobot) {
           await bot.sendTextWithMentions(event.chat, text.numerofake(event))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
           await bot.contactBlock(event.who)
           return console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
 
-        }
+        }*/
+
         else if (!onBkList && !vulgobot && newadd == 0) {
           newadd = 1
+          console.log('Antes da boas vindas')
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
           const image = await new canva.Welcome()
@@ -127,11 +135,12 @@ const start = async (bot = new Client()) => {
           .setColor("avatar", "#00100C")
           .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
+          console.log('Depois do boas vindas')
           await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(autorName, name))
           newadd = 0
         }
       }
-      else if (event.action == 'remove' && newexit == 0 && !vulgobot){
+      else if (event.action == 'remove' && newexit == 0 && !vulgobot && event.by == undefined){
         newexit = 1
         var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
@@ -155,6 +164,13 @@ const start = async (bot = new Client()) => {
       }
     }
     catch (err) {console.log(err); newadd = 0; newexit = 0}
+
+    if (event.action == 'remove' && !(event.by == undefined) && !(event.by == botnumber)) {
+      try{
+      bot.sendTextWithMentions(event.chat, `Por favor @${event.by.replace('@c.us', '')} , procure usar o comando /ban ao invés de remover manualmente.`)
+      } catch(err) {console.log(err)}
+    }
+
   })
   
   bot.onIncomingCall(async call => {

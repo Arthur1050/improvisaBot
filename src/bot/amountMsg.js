@@ -1,4 +1,5 @@
 const fs = require('fs-extra')
+const moment = require('moment-timezone')
 
 module.exports = amountMsg = (msg, bot) =>{
     const countMsg = JSON.parse(fs.readFileSync('./lib/jsons/msgCount.json'))
@@ -6,7 +7,8 @@ module.exports = amountMsg = (msg, bot) =>{
     //Função que parabeniza
     function congratulations(amountMsg) {
         try{
-        bot.reply(msg.from, `Muito bem!! Você acaba de completar ${amountMsg} mensagens no nosso grupo`, msg.id)
+            console.log(countMsg[0].begginDate)
+        bot.reply(msg.from, `Parabéns!! Você acaba de completar ${amountMsg} mensagens no nosso grupo.\n_Contando desde ${moment(countMsg[0].begginDate * 1000).format('DD/MM/YY HH:mm:ss')}_`, msg.id)
         } catch(err){console.log(err)}
     }
     // Verifica se o sender está apto a ser parabenizado

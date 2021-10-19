@@ -24,6 +24,8 @@ const text = require('./src/textsend');
 const { Color, yellow } = require('chalk');
 const { width, height } = require('@open-wa/wa-automate/dist/config/puppeteer.config')
 const { fit, format } = require('sharp')
+const { xml } = require('cheerio/lib/static')
+const { each } = require('cheerio/lib/api/traversing')
 const RGB = (texto, Color) => {return !Color ? chalk.green(texto) : chalk.keyword(Color)(texto)}
 
 /*function formatTemp (temps){
@@ -196,6 +198,12 @@ module.exports = corpo = async (bot, menssagem) => {
                 if (isGroupMsg){
                     if (isAdemesGroup) {bot.reply(from, text.mod(), id)} else bot.reply(from, 'Você não é adm.', id)
                 }else return bot.reply(from, text.cmdGroups(), id)
+            break
+
+            case 'dono':
+                if (!isDono) return bot.reply(from, 'Você não tem permissão pra isso.', id)
+                if (!isGroupMsg) return bot.reply(from, 'Comando exclusivo para grupos', id)
+                bot.reply(from, text.dono(), id)
             break
 
             case 'apagar':
@@ -475,10 +483,19 @@ module.exports = corpo = async (bot, menssagem) => {
 
                     let $ = cheerio.load(body)
 
-                    $('.riddle div').each(() => {
-                        console.log($(this).find('.question').text())
+                    //Pega todas as divs que contem um elemento com classe .question.
+                    // i = índice do array onde está armazenado as divs
+                    // element = a div conrrespondente ao índice
+                    $('div .riddle').each((i, element)=>{
+                        var question = $(this).find('.question').text()
+                        console.log(question)
                     })
                 })
             break
+
+            default:
+                bot.reply(from, 'Esse comando não existe.\nUse "/menu"')
+            break
+            
     }}catch(err) {console.log(err)}
 }
