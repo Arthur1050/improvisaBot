@@ -381,6 +381,32 @@ module.exports = corpo = async (bot, menssagem) => {
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
             break
 
+            case 'setadmgrup':
+                if (isDono && isGroupMsg) {
+                    var admGroup = await JSON.parse(fs.readFileSync('./lib/jsons/admGroup.json'))
+                    if (admGroup.length == 1) {admGroup.shift()}
+                    admGroup.push(from) 
+                    fs.writeFileSync('./lib/jsons/admGroup.json', JSON.stringify(admGroup))
+                    bot.reply(from, 'Grupo definido como grupo dos adms.', id)
+                }
+                else {
+                    bot.reply(from, "Comando restrito.")
+                }
+            break
+
+            case 'setgrupo':
+                if (isDono && isGroupMsg) {
+                    var grupoImprovisa = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
+                    if (grupoImprovisa.includes(from)) {return bot.reply(from, 'Esse grupo já foi adicionado.', id)}
+                    grupoImprovisa.push(from) 
+                    fs.writeFileSync('./lib/jsons/grupo.json', JSON.stringify(grupoImprovisa))
+                    bot.reply(from, 'Grupo registrado.', id)
+                }
+                else {
+                    bot.reply(from, 'Comando restrito.', id)
+                }
+            break
+
             case 'song':
                 /*let songteste = await ytdl('https://www.youtube.com/watch?v=KwM4yOwMls4').
                 songteste.on('resume', async (res) => { 

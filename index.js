@@ -12,6 +12,8 @@ const amountMsg = require('./src/bot/amountMsg')
 //Criar arquivos JSONS caso nn tenha
 if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/bkList.json',[])}
 if (!fs.existsSync('./lib/jsons/msgCount.json')) {fs.outputJSONSync('./lib/jsons/msgCount.json',[])}
+if (!fs.existsSync('./lib/jsons/admGroup.json')) {fs.outputJSONSync('./lib/jsons/admGroup.json',[])}
+if (!fs.existsSync('./lib/jsons/grupo.json')) {fs.outputJSONSync('./lib/jsons/grupo.json',[])}
 
 //Pegando o arquivo msgCount.JSON e transformando em um obj
 const msgCountJson = fs.readFileSync('./lib/jsons/msgCount.json')
@@ -22,7 +24,12 @@ if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: t
 
 
 const start = async (bot = new Client()) => {
-  console.log('O Arthur comanda saporra')
+
+  setInterval(()=> {
+    fs.out
+  }, 30000)
+
+  console.log('Pronto para começarmos!!')
 
   //Força recarregamento
   bot.onStateChanged (async state => {
@@ -32,7 +39,6 @@ const start = async (bot = new Client()) => {
   
   // Ouve as mesnagens recebidas
   bot.onMessage( async menssagem => {
-    console.log(menssagem.quotedMsg)
 
     //Apaga o cachê após acumular mais de 2000 msg
     await bot.getAmountOfLoadedMessages().then(async msg => {
