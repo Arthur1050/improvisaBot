@@ -190,6 +190,15 @@ module.exports = corpo = async (bot, menssagem) => {
                 else return bot.reply(from, text.cmdGroups(), id)
             break
 
+            case 'setname':
+                if (isDono) {
+                    var nameBot = ''
+                    for (i in arrayMsg) {i++; if (i == arrayMsg.length) {nameBot = nameBot} else {nameBot = nameBot + ' ' + arrayMsg[i]}}
+                    bot.setMyName(nameBot).then(()=>{bot.reply(from, 'Nome alterado com sucesso!!', id)}).catch(() => {bot.reply(from, 'Houve algum problema no procedimento...', id)})
+                }
+                else {bot.reply(from, 'Comando restrito.', id)}
+            break
+
             case 'menu':
                 bot.reply(from, text.menu(), id)
             break
