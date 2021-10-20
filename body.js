@@ -381,7 +381,7 @@ module.exports = corpo = async (bot, menssagem) => {
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
             break
 
-            case 'setadmgrup':
+            case 'setadmgrupo':
                 if (isDono && isGroupMsg) {
                     var admGroup = await JSON.parse(fs.readFileSync('./lib/jsons/admGroup.json'))
                     if (admGroup.length == 1) {admGroup.shift()}
