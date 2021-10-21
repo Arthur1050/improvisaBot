@@ -203,6 +203,10 @@ module.exports = corpo = async (bot, menssagem) => {
                 bot.reply(from, text.menu(), id)
             break
 
+            case 'diversao':
+                bot.reply(from, text.diversao(), id)
+            break
+
             case 'mod':
                 if (isGroupMsg){
                     if (isAdemesGroup) {bot.reply(from, text.mod(), id)} else bot.reply(from, 'Você não é adm.', id)
@@ -300,19 +304,6 @@ module.exports = corpo = async (bot, menssagem) => {
                 } else bot.reply(from, text.cmdGroups(), id)
             break
 
-            case 'piada2':
-                const joke = await requestJoke.getRandomJokeWithTag('sarcastic',{'exclude_tags': ['life', 'rude']})
-                console.log(joke.body)
-                console.log(joke.tags)
-                console.log(joke.tags.length)
-                var tags = '_Tags:_ '
-                for (var i = 0; i < joke.tags.length; i++) {tags += `_${joke.tags[i]},_ `}
-                translator(joke.body, {client: 'gtx', to: 'pt'}).then( async (res) => {
-                    const msg = await res.text + `\n\n${tags}`
-                    await bot.reply(from, msg, id)
-                })
-            break
-
             case 'tempban': //Atualização necessária: Fazer com que seja possível banir membros em massa sem dar erro nos "Reply Error"
                 if (isGroupMsg) {
                     if (!isAdemesGroup) { return bot.reply(from, text.isMembroComum(), id) }
@@ -345,35 +336,6 @@ module.exports = corpo = async (bot, menssagem) => {
                         bot.addParticipant(idGroup, membro)
                     } catch (err) { bot.reply(form, 'Não foi possível completar a ação.', id) }
                 } else bot.reply(from, text.cmdGroups(), id)
-            break
-
-            case 'piada':
-                return bot.reply(from, '_*Indisponivél.*_\nCertas "piadas" me fez tomar essa decisão...🥲 Mas não se preocupem! Em breve inclementarei um novo meio hehe💅', id)
-                if (piada == 0) {
-                    piada = 1
-                    var options = {
-                        method: 'GET',
-                        url: 'https://jokeapi-v2.p.rapidapi.com/joke/Any',
-                        params: {
-                            type: 'twopart',
-                            format: 'json',
-                            lang: 'en',
-                            flags: {
-                                nsfw: 'fasle',
-                                racist: 'false'
-                            }
-                        },
-                        headers: {
-                            'x-rapidapi-key': '8299cf66damsh643f877ad4e03d0p10fabcjsn174e5c373432',
-                            'x-rapidapi-host': 'jokeapi-v2.p.rapidapi.com'
-                        }
-                    }
-                    var joke2 = await axios.request(options).then((res) => { return res.data }).catch((err) => { return bot.reply(from, 'Tive algumas complicações... Use o comando novamente', id), piada = 0 })
-                    var setupPt = await translator(joke2.setup, { client: 'gtx', to: 'pt' }).then((res) => { return res.text })
-                    var deliveryPt = await translator(joke2.delivery, { client: 'gtx', to: 'pt' }).then((res) => { return res.text })
-                    await bot.reply(from, setupPt, id).then(async () => { bot.sendText(from, deliveryPt) })
-                    piada = 0
-                } else bot.reply(from, 'Já estou gerando uma. Aguarde...', id)
             break
 
             case 'ideia':
@@ -564,20 +526,26 @@ module.exports = corpo = async (bot, menssagem) => {
 
             break
 
-            case 'teste':
-                request('https://www.osvigaristas.com.br/charadas/', function(err, res, body) {
-                    if (err) {console.log(`Error = ${err}`)}
+            case 'charada':
+                const $charada = await axios.get('https://www.osvigaristas.com.br/charadas/').then(res => {
+                    return cheerio.load(res.data)
+                })
+                var charadaArray = []
 
-                    let $ = cheerio.load(body)
-
-                    //Pega todas as divs que contem um elemento com classe .question.
-                    // i = índice do array onde está armazenado as divs
-                    // element = a div conrrespondente ao índice
-                    $('div .riddle').each((i, element)=>{
-                        var question = $(this).find('.question').text()
-                        console.log(question)
+                $charada('.riddle').each((index, element) => {
+                    let charadaPergunta = $charada('.question', element).text()
+                    let charadaResposta = $charada('.hidden', element).text()
+                    charadaArray.push({
+                        pergunta: charadaPergunta,
+                        resposta: charadaResposta
                     })
                 })
+
+                let indexCharada = Math.floor(Math.random() * charadaArray.length)
+
+                await bot.reply(from, charadaArray[indexCharada].pergunta, id)
+                setTimeout(()=>{bot.sendText(from, charadaArray[indexCharada].resposta)}, 2000)
+
             break
 
             default:
