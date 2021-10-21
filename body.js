@@ -52,7 +52,7 @@ module.exports = corpo = async (bot, menssagem) => {
 
         let {pushname, verifiedName, formattedName} = sender
         pushname = pushname || verifiedName || formattedName
-        const arrayMsg = body.slice(1).trim().split(/ +/)
+        var arrayMsg = body.slice(1).trim().split(/ +/)
         const textRest = body.trim().slice(body.indexOf(' ') + 1)        
         //constantes
 
@@ -394,6 +394,48 @@ module.exports = corpo = async (bot, menssagem) => {
                 }
             break
 
+            case 'anunciar':
+                function creatJson() {
+                    console.log('Executando')
+                    if (!fs.existsSync('./lib/jsons/anuncios.json')) {fs.outputJSONSync('./lib/jsons/anuncios.json',[])}
+                    console.log('Criado')
+                    processArgs()
+                }
+
+                function processArgs() {
+                    arrayMsg.shift()
+                    var indexHora = arrayMsg.findIndex(hora => {return hora === '--horas'})
+                    if (indexHora == -1) return bot.reply(from, 'Especifique um horario.', id)
+                    var msgAnuncio = msg(indexHora, arrayMsg).trim()
+                    indexHora++
+                    if (arrayMsg[indexHora] == undefined) return bot.reply(from, 'Especifique um horario.', id)
+                    var msgHoras = arrayMsg[indexHora]
+                    writeAnuncio(msgAnuncio, msgHoras)
+                }
+
+                function msg(indexHora, anuncio) {
+                    let msgAnuncio = ''
+                    for (i in anuncio) {
+                        if (i == indexHora) {break}
+                        else {
+                            msgAnuncio = msgAnuncio + ' ' + anuncio[i]
+                        }
+                    }
+                    return msgAnuncio
+                }
+
+                async function writeAnuncio(anuncio, horas) {
+                    var jsonAnuncio = await JSON.parse(fs.readFileSync('./lib/jsons/anucios.json'))
+                    await jsonAnuncio.push({
+                        menssagem: anuncio,
+                        hora: horas
+                    })
+                    fs.writeFileSync(JSON.stringify(jsonAnuncio))
+                }
+
+                creatJson()
+            break
+
             case 'setgrupo':
                 if (isDono && isGroupMsg) {
                     var grupoImprovisa = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
@@ -461,9 +503,19 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'eununca':
-                axios.get('https://www.dicionariopopular.com/perguntas-eu-nunca-jogo/', {method:''}).then(async (res) =>{
-                    console.log(res.headers)
+                const $eununca = await axios.get('https://www.dicionariopopular.com/perguntas-eu-nunca-jogo/').then(async (res) =>{
+                    return cheerio.load(res.data)
                 })
+
+                var eununcaArray = []
+                $eununca('ol li').each((index, element) => {
+                    eununcaArray.push($eununca(element).text()) 
+                })
+
+                eununcaArray.splice(0, 2)
+                let randomIndex = Math.floor(Math.random() * eununcaArray.length)
+                bot.reply(from, eununcaArray[randomIndex], id)
+
             break
 
             case 'hi':
