@@ -28,7 +28,7 @@ const start = async (bot = new Client()) => {
 
   setInterval(()=> {
     let readAnuncio = JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
-    let grupos = JSON.parse(fs.readFileSync('./lib/jsons/admgroup.json'))
+    let grupos = JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
     let nowHours = new Date
     let nowMinutes = nowHours.getMinutes() < 10? 0 + nowHours.getMinutes(): nowHours.getMinutes()
     let nowDate = nowHours.getHours() + ':' + nowMinutes
