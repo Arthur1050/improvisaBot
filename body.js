@@ -549,6 +549,39 @@ module.exports = corpo = async (bot, menssagem) => {
 
             break
 
+            case 'piada':
+                bot.reply(from, 'Um momento, essa vai ser boa!', id)
+                var arrayPiada = []
+                
+                for (let i = 1; i <=10; i++) {
+                    const $piada = await axios.get(`https://www.osvigaristas.com.br/piadas/curtas/pagina${i}.html`).then((res => {
+                        return cheerio.load(res.data)
+                    }))
+
+                    $piada('.item-index .row').each((index, element) => {
+                        var piadaScore = $piada('.vote_score__2c2Yx', element).text()
+
+                        if (piadaScore >= 50) {
+                            var piadaTitle = $piada('h4 [href]', element).text()
+                            var piada = ''
+
+                            $piada('.joke p', element).each((indexP, elementP) => {
+                                return piada = piada + $piada(elementP).text()
+                            })
+
+                            arrayPiada.push({
+                                tittle: piadaTitle,
+                                piada: piada
+                            })
+                        }
+                    })
+                }
+                let piadaLenght = arrayPiada.length
+                let randomIndexPiada = Math.floor(Math.random() * piadaLenght)
+
+                bot.reply(from, `*${arrayPiada[randomIndexPiada].tittle}*\n\n${arrayPiada[randomIndexPiada].piada}`, id)
+            break
+
             default:
                 bot.reply(from, 'Esse comando não existe.\nUse "/menu"')
             break

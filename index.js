@@ -32,7 +32,6 @@ const start = async (bot = new Client()) => {
     let nowHours = new Date
     let nowMinutes = nowHours.getMinutes() < 10? '0' + nowHours.getMinutes().toString(): nowHours.getMinutes()
     let nowDate = nowHours.getHours() + ':' + nowMinutes
-    console.log(nowDate)
 
     for (i in readAnuncio) {
       if (readAnuncio[i].hora == nowDate) {
