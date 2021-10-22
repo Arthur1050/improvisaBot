@@ -465,6 +465,11 @@ module.exports = corpo = async (bot, menssagem) => {
                     await bot.setProfilePic(`data:${perfilMime};base64,${perfilbase64}`).then(async () => {await bot.reply(from, 'Perfil alterado com sucesso!', id)})
             break
 
+            case 'setstatus':
+                if (!isDono) {return bot.reply(from, 'Comando exclusivo do dono.', id)}
+                bot.setMyStatus(textRest).then(() => {bot.reply(from, 'Status alterado com sucesso!', id)})
+            break
+
             case 'eununca':
                 const $eununca = await axios.get('https://www.dicionariopopular.com/perguntas-eu-nunca-jogo/').then(async (res) =>{
                     return cheerio.load(res.data)
