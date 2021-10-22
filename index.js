@@ -14,6 +14,7 @@ if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/b
 if (!fs.existsSync('./lib/jsons/msgCount.json')) {fs.outputJSONSync('./lib/jsons/msgCount.json',[])}
 if (!fs.existsSync('./lib/jsons/admGroup.json')) {fs.outputJSONSync('./lib/jsons/admGroup.json',[])}
 if (!fs.existsSync('./lib/jsons/grupo.json')) {fs.outputJSONSync('./lib/jsons/grupo.json',[])}
+if (!fs.existsSync('./lib/jsons/anuncios.json')) {fs.outputJSONSync('./lib/jsons/anuncios.json',[])}
 
 //Pegando o arquivo msgCount.JSON e transformando em um obj
 const msgCountJson = fs.readFileSync('./lib/jsons/msgCount.json')
@@ -26,7 +27,21 @@ if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: t
 const start = async (bot = new Client()) => {
 
   setInterval(()=> {
-    fs.out
+    let readAnuncio = JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
+    let grupos = JSON.parse(fs.readFileSync('./lib/jsons/admgroup.json'))
+    let nowHours = new Date
+    let nowMinutes = nowHours.getMinutes() < 10? 0 + nowHours.getMinutes(): nowHours.getMinutes()
+    let nowDate = nowHours.getHours() + ':' + nowMinutes
+    console.log(nowDate)
+
+    for (i in readAnuncio) {
+      if (readAnuncio[i].hora == nowDate) {
+        for (t in grupos) {
+          bot.sendText(grupos[t], readAnuncio[i].menssagem)
+        }
+      }
+    }
+
   }, 30000)
 
   console.log('Pronto para começarmos!!')

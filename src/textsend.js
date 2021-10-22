@@ -40,7 +40,7 @@ exports.diversao = () => {return `*⬐»»——DIVERSÃO——««⬎*\n\n *[NO
 
 exports.mod = () => {return `*⬐»»——ADMINS——««⬎*\n\n「🚷」≫ */Ban* _(@membro) (Motivo)_\n*»* _Expulsa um membro do grupo._\n_Obs: Marque alguém ou uma mensagem._\n\n「⏳」≫ */Tempban* _(@membro) (minutos)_\n*»* _Expulsa um membro pelo tempo desejado (em minutos)._\n\n「♻️」≫ */Unban* _(marque uma mensagem)_\n*»* _Volta o individuo para o grupo._\n_Obs: É necessário que marque a mensagem._\n\n「📓」≫ */Bklist (DDI+DDD+Numero)*\n*»* _Exemplo de uso:_\n/bklist 553499532444\n\n「👤」≫ */Add* (DDI+DDD+Numero)\n*»* _Adiciona um participante a partir do numero especificado._\n\n「🚪」≫ */Redefinir*\n*»* _Revoga o link de convite._\n\n「🔇」≫ */Fechar*\n*»* _Fecha o grupo somente para os adms._\n\n「🗣」≫ */Abrir*\n*»* _Abre o grupo para todos._\n\n_⚠️Use "help" depois dos comandos ban, unban e tempban, para ver o manual de uso._\n\n_ιмᴘʀovιsᴀBӨƬ • © ᴀʀᴛʜᴜʀ_`}
 
-exports.dono = () => {return `*⬐»»——DONO——««⬎*\n\n*/Promover*\n\n*/Rebaixar*\n\n*/Setimage*\n\n*/Clean*\n\n*/setadmgrupo*\n\n*/setgrupo*\n\n*/Anuncio* _(mensagem) --horas (horas)_`}
+exports.dono = () => {return `*⬐»»——DONO——««⬎*\n\n*/Promover*\n\n*/Rebaixar*\n\n*/Setimage*\n\n*/Clean*\n\n*/setadmgrupo*\n\n*/setgrupo*\n\n*/Anunciar* _(mensagem) --horas (horas)_`}
 
 exports.snaptube = () => {return `*⬐»»——SNAPTUBE——««⬎*\n\n「🎵」≫ */Song* (nome)\n*»* _Baixa a musica que for digitada depois do comando._\n\n_*Mais opçoes de downloads futuramente!*_\n\n_ιмᴘʀovιsᴀBӨƬ • © ᴀʀᴛʜᴜʀ_`}
 

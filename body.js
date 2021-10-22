@@ -11,7 +11,7 @@ const {get, default: axios} = require('axios')
 const requestJoke = require('one-liner-joke')
 const ytdl = require('ytdl-core')
 const ytSearch = require('yt-search')
-const fs = require('fs')
+const fs = require('fs-extra')
 const HTML = require('parse5')
 const request = require('request')
 const cheerio = require('cheerio')
@@ -215,7 +215,6 @@ module.exports = corpo = async (bot, menssagem) => {
 
             case 'dono':
                 if (!isDono) return bot.reply(from, 'Você não tem permissão pra isso.', id)
-                if (!isGroupMsg) return bot.reply(from, 'Comando exclusivo para grupos', id)
                 bot.reply(from, text.dono(), id)
             break
 
@@ -357,13 +356,12 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'anunciar':
+                // Verifica se o arquivo anuncios.json existe e cria um caso não haja um
                 function creatJson() {
-                    console.log('Executando')
-                    if (!fs.existsSync('./lib/jsons/anuncios.json')) {fs.outputJSONSync('./lib/jsons/anuncios.json',[])}
-                    console.log('Criado')
                     processArgs()
                 }
 
+                //Separa a mensagem e as horas passadas no comando
                 function processArgs() {
                     arrayMsg.shift()
                     var indexHora = arrayMsg.findIndex(hora => {return hora === '--horas'})
@@ -375,6 +373,7 @@ module.exports = corpo = async (bot, menssagem) => {
                     writeAnuncio(msgAnuncio, msgHoras)
                 }
 
+                //Juntas as palavras do anuncia declarado no comando
                 function msg(indexHora, anuncio) {
                     let msgAnuncio = ''
                     for (i in anuncio) {
@@ -386,15 +385,17 @@ module.exports = corpo = async (bot, menssagem) => {
                     return msgAnuncio
                 }
 
+                //Adiciona ao arquivo anuncios.json a mensagem à ser anunciada e o horário
                 async function writeAnuncio(anuncio, horas) {
-                    var jsonAnuncio = await JSON.parse(fs.readFileSync('./lib/jsons/anucios.json'))
+                    var jsonAnuncio = await JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
                     await jsonAnuncio.push({
                         menssagem: anuncio,
                         hora: horas
                     })
-                    fs.writeFileSync(JSON.stringify(jsonAnuncio))
+                    fs.writeFileSync('./lib/jsons/anuncios.json', JSON.stringify(jsonAnuncio))
                 }
 
+                // Dá inicio ao procedimento
                 creatJson()
             break
 
