@@ -338,7 +338,7 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'ideia':
-                if (arrayMsg.length = 1) {return bot.reply(from, 'Comando incompleto.', id)}
+                if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto.', id)}
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
             break
 
