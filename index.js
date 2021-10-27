@@ -4,6 +4,7 @@ const canva = require ('discord-canvas')
 const text = require('./src/textsend')
 const options = require('./src/options')
 const corpo = require("./body")
+const checkFaceGroup = require('./src/checkFaceGroup')
 const moment = require('moment-timezone')
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
@@ -26,6 +27,7 @@ if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: t
 
 const start = async (bot = new Client()) => {
 
+    // Lê e envia anuncios nos grupos
   setInterval(()=> {
     let readAnuncio = JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
     let grupos = JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
@@ -42,6 +44,12 @@ const start = async (bot = new Client()) => {
     }
 
   }, 30000)
+
+  // Verifica o ùltimo post do grupo do facebook
+  //checkFaceGroup(bot)
+  /*setInterval(() => {
+    checkFaceGroup(bot)
+  }, 5000)*/
 
   console.log('Pronto para começarmos!!')
 
@@ -107,10 +115,9 @@ const start = async (bot = new Client()) => {
     const botnumber = await bot.getHostNumber() + '@c.us'
     const vulgobot = autor == botnumber
     const infoautor = await bot.getContact(event.who)
-    let autorName = infoautor.pushname || infoautor.name
+    let autorName = infoautor.pushname == undefined? infoautor.verifiedName: infoautor.pushname
     const gChat = await bot.getChatById(event.chat)
-    const {contact, groupMetadata, name} = await gChat
-    console.log(event)
+    const {contact, groupMetadata, name} = gChat
 
     try {
       if (event.action == 'add'){
@@ -125,13 +132,13 @@ const start = async (bot = new Client()) => {
         }
 
         //Remove Numeros fakes
-        /*if (!trueNumber && !vulgobot) {
+        if (!trueNumber && !vulgobot) {
           await bot.sendTextWithMentions(event.chat, text.numerofake(event))
           await setTimeout(() => {bot.removeParticipant(event.chat, event.who)}, 4000)
           await bot.contactBlock(event.who)
           return console.log(`->FakeNumber<-  Um numero fake tentou entrar no grupo (${event.who.replace('@c.us', ' ')})`)
 
-        }*/
+        }
 
         else if (!onBkList && !vulgobot && newadd == 0) {
           newadd = 1

@@ -607,6 +607,57 @@ module.exports = corpo = async (bot, menssagem) => {
                 let randomIndexMeme = Math.floor(Math.random() * arrayMeme.length)
 
                 bot.sendFileFromUrl(from, arrayMeme[randomIndexMeme], 'Bot_Improvisado_Memes_@arthur_tm_.jpeg', '_Memes do iFunny_')
+            break
+
+            case 'mensagens':
+                if (!isGroupMsg) {return bot.reply(from, 'Comando exclusivo para grupos.', id)}
+
+                const parsedMsg = await JSON.parse(fs.readFileSync('./lib/jsons/msgCount.json'))
+                const groupMembersScore = await bot.getGroupMembers(from)
+                var groupMembersScoreIds = []
+                for (let i in groupMembersScore) {groupMembersScoreIds.push(groupMembersScore[i].id)}
+                var positionScore = 1
+
+                parsedMsg.sort((a, b) => {
+                    if (a.msgs > b.msgs) {
+                        return -1
+                    }
+                    else {
+                        return 1
+                    }
+                })
+
+                var scoreMsg = '*PLACAR DE MENSAGENS*\n\n'
+
+                for (let i in parsedMsg) {
+
+                    if (i > 0) {
+
+                        if (groupMembersScoreIds.includes(parsedMsg[i].id)){
+
+                            var memberScore = await bot.getContact(parsedMsg[i].id)
+                            var nameScore = await memberScore == null? '@' + parsedMsg[i].id.replace('@c.us', '') : memberScore.pushname || memberScore.verifiedName
+                            nameScore = nameScore == undefined? '@' + parsedMsg[i].id.replace('@c.us', ''): nameScore
+
+                            scoreMsg = positionScore == 1? scoreMsg + '🏅 ': scoreMsg
+                            scoreMsg = positionScore == 2? scoreMsg + '🥉 ': scoreMsg
+                            scoreMsg = positionScore == 3? scoreMsg + '🥈 ': scoreMsg
+                            positionScore++
+
+                            scoreMsg = scoreMsg + `*${nameScore}* : _${parsedMsg[i].msgs} Mensagens_\n`
+                        }
+                    }
+                }
+
+                console.log(scoreMsg.includes('@'))
+                if (scoreMsg.includes('@')) {
+                    bot.sendTextWithMentions(from, scoreMsg + '\n\n_ιмᴘʀovιsᴀBӨƬ • © ᴀʀᴛʜᴜʀ_')
+                }
+                else {
+                    bot.sendText(from, scoreMsg + '\n\n_ιмᴘʀovιsᴀBӨƬ • © ᴀʀᴛʜᴜʀ_')
+                }
+
+            break
 
             default:
                 bot.reply(from, 'Esse comando não existe.\nUse "/menu"')
