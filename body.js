@@ -14,6 +14,7 @@ const ytSearch = require('yt-search')
 const fs = require('fs-extra')
 const HTML = require('parse5')
 const request = require('request')
+const atualizacaoBot = require('./src/att')
 const cheerio = require('cheerio')
 
 //Interruptores
@@ -399,6 +400,10 @@ module.exports = corpo = async (bot, menssagem) => {
                 creatJson()
             break
 
+            case 'att':
+                bot.reply(from, atualizacaoBot.atualizacao(), id)
+            break
+
             case 'setgrupo':
                 if (isDono && isGroupMsg) {
                     var grupoImprovisa = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
@@ -686,11 +691,28 @@ module.exports = corpo = async (bot, menssagem) => {
                 }
 
                 cornaoGuerreiro()
+            break
 
+            case 'match':
+                if (!isGroupMsg) {return bot.reply(from, 'Comandos exclusivo pra grupos', id)}
+
+                async function tinderMatch() {
+                    let searchMemberMatch = await bot.getGroupMembers(from)
+                    let indexMatch = Math.floor(Math.random() * searchMemberMatch.length)
+                    let randomMatch = await bot.getContact(searchMemberMatch[indexMatch].id)
+
+                    if (randomMatch.isMe == false) {
+                        bot.sendFileFromUrl(from, "https://i.imgur.com/plzsH7o.png", 'matchImprovisado.jpg', 
+                        `「❤️‍🔥」\n @${sender.id.replace('@c.us', '')} « deu *MATCH*❤️ com » @${randomMatch.id.replace('@c.us', '')}`, id)
+                    }
+                    else {tinderMatch()}
+                }
+
+                tinderMatch()
             break
 
             default:
-                bot.reply(from, 'Esse comando não existe.\nUse "/menu"', id)
+                bot.reply(from, 'Tente novamente.\nUse "/menu" para mais comandos.', id)
             break
             
     }}catch(err) {console.log(err)}
