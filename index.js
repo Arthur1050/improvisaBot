@@ -9,6 +9,7 @@ const moment = require('moment-timezone')
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
 const amountMsg = require('./src/bot/amountMsg')
+const nowHours = new Date
 
 //Criar arquivos JSONS caso nn tenha
 if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/bkList.json',[])}
@@ -26,12 +27,12 @@ if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: t
 
 
 const start = async (bot = new Client()) => {
-
-    // Lê e envia anuncios nos grupos
+  console.log('Pronto para começarmos!!')
+  
+  // Lê e envia anuncios nos grupos
   setInterval(()=> {
     let readAnuncio = JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
     let grupos = JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
-    let nowHours = new Date
     let nowMinutes = nowHours.getMinutes() < 10? '0' + nowHours.getMinutes().toString(): nowHours.getMinutes()
     let nowDate = nowHours.getHours() + ':' + nowMinutes
 
@@ -51,7 +52,23 @@ const start = async (bot = new Client()) => {
     checkFaceGroup(bot)
   }, 5000)*/
 
-  console.log('Pronto para começarmos!!')
+
+  //Lembrete de tomar água
+    setInterval(async ()=> {
+      if (nowHours.getHours() > 7) {
+        let grupos = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
+        
+        let groupSender = Math.random()
+        groupSender = groupSender >= 0.50 ? 1 : 0
+
+        const membrosGroup = await bot.getGroupMembers(grupos[groupSender])
+        let randomMembro = membrosGroup[Math.floor(Math.random() * membrosGroup.length)].id
+
+        bot.sendTextWithMentions(grupos[groupSender], 
+          `Olá @${randomMembro.replace('@c.us', '')}\nJá se hidratou adequadamente hoje?\nVamos! Beba um copo de água❤️`)
+      }
+    }, 60 * 60000)
+  
 
   //Força recarregamento
   bot.onStateChanged (async state => {

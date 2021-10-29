@@ -660,7 +660,7 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             default:
-                bot.reply(from, 'Esse comando não existe.\nUse "/menu"')
+                bot.reply(from, 'Esse comando não existe.\nUse "/menu"', id)
             break
             
     }}catch(err) {console.log(err)}
