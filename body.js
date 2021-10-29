@@ -659,6 +659,36 @@ module.exports = corpo = async (bot, menssagem) => {
 
             break
 
+            case 'corno':
+                if (!isGroupMsg) {return bot.reply(from, 'Comando exclusivo para grupos.', id)}
+
+                async function amigoCorno() {
+                    let chanceTregua = Math.floor( Math.random() * 100)
+                    console.log(chanceTregua)
+
+                    if (chanceTregua <= 15) {
+                        bot.sendText(from, 'Pq zoar o amiguinho corno sendo que ele foi o único fiel da relação?😓')
+                    }
+                }
+
+                async function cornaoGuerreiro() {
+                    let membrosCornos = await bot.getGroupMembers(from)
+                    let indexCorno = Math.floor(Math.random() * membrosCornos.length)
+                    let randomCorno = await bot.getContact(membrosCornos[indexCorno].id)
+
+                    if (randomCorno.isMe == false) {
+                        let picCorno = await randomCorno.profilePicThumbObj.img == undefined || null? "https://i.imgur.com/engkEFm.jpg" : await bot.getProfilePicFromServer(randomCorno.id)
+                        await bot.sendFileFromUrl(from, picCorno, "cornãoGuerreiro.jpg", `「🦬」 @${randomCorno.id.replace('@c.us', '')} foi condecorado à *Cornão Guerreiro(a)* pelo(a) @${sender.id.replace('@c.us', '')}`, id)
+
+                        amigoCorno()
+                    }
+                    else {cornaoGuerreiro()}
+                }
+
+                cornaoGuerreiro()
+
+            break
+
             default:
                 bot.reply(from, 'Esse comando não existe.\nUse "/menu"', id)
             break
