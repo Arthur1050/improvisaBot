@@ -156,23 +156,49 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'ban':; case 'kick':
-                if (isGroupMsg){
+                if (!isGroupMsg){ return bot.reply(from, text.cmdGroups(), id)}
+
+                //Reporta o banimento ao juri
+                async function reportJuri(autor, alvo, grupo, motivo, alvoNum) {
+                    let admGroup = await JSON.parse(fs.readFileSync('./lib/jsons/admGroup.json'))
+
+                    await bot.sendTextWithMentions(admGroup[0], `Banimento no grupo ${grupo}\n\n*ADM:* _@${autor.replace('@c.us', '')}_\n*Alvo:* _${alvo}_\n*Alvo cntt:* wa.me/+${alvoNum.replace('@c.us', '')}\n\n*Motivo:* _${motivo}_`)
+
+                }
                     const isNulltext = await mentionedJidList.length == 0
-                    if (!isAdemesGroup) {return bot.reply(from, 'Esse é um comando apenas para admins.', id)}
+                    const groupInfo = await bot.getGroupInfo(from)
+                    if (!isAdemesGroup) {return bot.reply(from, 'Comando exclusivo dos adms.', id)}
                     if (!isBotAdeme) {return bot.reply(from, text.noSoyAdm(), id)}
+                    // Instruções do comando
                     if (arrayMsg[1] == 'help') {return await bot.sendFileFromUrl(from, 'https://i.ibb.co/wppf0t8/imagem-2021-07-20-221518.png', 'banHelp.png', text.banHelp(), id), bot.sendFileFromUrl(from, 'https://i.ibb.co/ThDQ4X3/imagem-2021-07-20-222714.png', 'banHelp.png', text.banHelp2())}
                     if (!quotedMsg && isNulltext) {return bot.reply(from, 'Marque alguém ou selecione uma mensagem', id)}
-                    if (isAdemesGroup, isBotAdeme, quotedMsg || !isNulltext) {
-                        try {
-                            const mentionRest = await textRest.slice(textRest.indexOf(' ') + 1) //Se tiver alguém mencionado, é armazenado o texto pós menção na variavél "mentionRest"
-                              if(!quotedMsg) {var motivo = arrayMsg.length == 2? 'Não declarado' : mentionRest} else {var motivo = arrayMsg.length == 1? 'Não declarado' : textRest} // Se declado, armazena o motivo na variavél "motivo". Senão for declarado, armazena "Não declarado", na variavél "motivo".
-                              if(quotedMsg) {var banido = await quotedMsg.sender.pushname} else {let banidoMencion = await bot.getContact(mentionedJidList[0]); var banido = banidoMencion.pushname} // Pega o nome banido e armazena na varivel "banido"
-                            const alvo = await quotedMsg ? quotedMsg.author : mentionedJidList[0]
-                            await bot.removeParticipant(idGroup, alvo).then(async () => { await bot.reply(from, text.finish(banido, motivo), id) })
-                        } catch (err) { bot.reply(from, text.fail(), id); console.log(err) }
-                    }
-                }
-                else return bot.reply(from, text.cmdGroups(), id)
+
+                    try {
+                        const posMencao = await textRest.slice(textRest.indexOf(' ') + 1)
+
+                        // Pegando o motivo do banimento
+                        if(!quotedMsg) {
+                            var motivo = arrayMsg.length == 2? 'Não declarado' : posMencao
+                        } 
+                        else {
+                            var motivo = arrayMsg.length == 1? 'Não declarado' : textRest
+                        }
+                        // Pega o nome do banido
+                        if(quotedMsg) {
+                            var banido = await quotedMsg.sender.pushname
+                        } else {
+                            let banidoMencion = await bot.getContact(mentionedJidList[0]); var banido = banidoMencion.pushname
+                        }
+                        
+                        const alvo = await quotedMsg ? quotedMsg.author : mentionedJidList[0]
+                        await bot.removeParticipant(idGroup, alvo).then(async () => { 
+                        await bot.reply(from, text.finish(banido, motivo), id)
+
+                        reportJuri(author, banido, groupInfo.title, motivo, alvo ) 
+                        })
+
+                } catch (err) { bot.reply(from, text.fail(), id); console.log(err) }
+                
             break
 
 
@@ -649,7 +675,7 @@ module.exports = corpo = async (bot, menssagem) => {
                             scoreMsg = positionScore == 3? scoreMsg + '🥈 ': scoreMsg
                             positionScore++
 
-                            scoreMsg = scoreMsg + `*${nameScore}* : _${parsedMsg[i].msgs} Mensagens_\n`
+                            scoreMsg = scoreMsg + `*${nameScore}*\n_${parsedMsg[i].msgs} Mensagens_\n\n`
                         }
                     }
                 }
@@ -710,6 +736,9 @@ module.exports = corpo = async (bot, menssagem) => {
 
                 tinderMatch()
             break
+
+            case 'perfil':
+                if (!isGroupMsg) {return bot.reply(from, 'Comando exclusivo para grupos.', id)}
 
             default:
                 bot.reply(from, 'Tente novamente.\nUse "/menu" para mais comandos.', id)
