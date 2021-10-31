@@ -8,7 +8,7 @@ module.exports = amountMsg = (msg, bot) =>{
     function congratulations(amountMsg) {
         try{
             console.log(countMsg[0].begginDate)
-        bot.reply(msg.from, `Parabéns!! Você acaba de completar ${amountMsg} mensagens no nosso grupo.\n_Contando desde ${moment(countMsg[0].begginDate * 1000).format('DD/MM/YY HH:mm:ss')}_`, msg.id)
+        bot.reply(msg.from, `Marco de ${amountMsg} mensagens alcançado.\n_Contando desde ${moment(countMsg[0].begginDate * 1000).format('DD/MM/YY HH:mm:ss')}_`, msg.id)
         } catch(err){console.log(err)}
     }
     // Verifica se o sender está apto a ser parabenizado
@@ -23,16 +23,16 @@ module.exports = amountMsg = (msg, bot) =>{
     for (let i in countMsg) {
         if (i > 0) {
             searchMsg(countMsg[i].msgs, countMsg[i].id, 10)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 50)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 100)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 150)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 200)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 250)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 300)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 400)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 500)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 750)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 800)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 1000)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 1500)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 2000)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 3000)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 4000)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 5000)
             }
         }
     
