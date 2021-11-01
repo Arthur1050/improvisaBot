@@ -364,6 +364,14 @@ module.exports = corpo = async (bot, menssagem) => {
                 } else bot.reply(from, text.cmdGroups(), id)
             break
 
+            case 'bat':
+                if (!isDono) {return ot.reply(from, 'Comando exclusivo do dono.', id)}
+
+                let batteryLevel = await bot.getBatteryLevel()
+
+                bot.reply(from, `Bateria: ${batteryLevel}%`, id)
+            break
+
             case 'ideia':
                 if (arrayMsg.length == 1) {return bot.reply(from, 'Comando incompleto.', id)}
                 bot.sendText(Dono, `*IDEIA PARA O BOT*\n\n*Ideia:* "${textRest}"\n_De:_ ${pushname} | wa.me/+${user.replace('@c.us', ' ')}\n_Do grupo:_ ${name}`).then(() => {bot.reply(from, 'Sua ideia foi recebida com sucesso!', id)})
