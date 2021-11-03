@@ -679,11 +679,12 @@ module.exports = corpo = async (bot, menssagem) => {
                             nameScore = nameScore == undefined? '@' + parsedMsg[i].id.replace('@c.us', ''): nameScore
 
                             scoreMsg = positionScore == 1? scoreMsg + '🏅 ': scoreMsg
-                            scoreMsg = positionScore == 2? scoreMsg + '🥉 ': scoreMsg
-                            scoreMsg = positionScore == 3? scoreMsg + '🥈 ': scoreMsg
+                            scoreMsg = positionScore == 2? scoreMsg + '\n🥈 ': scoreMsg
+                            scoreMsg = positionScore == 3? scoreMsg + '\n🥉 ': scoreMsg
+                            scoreMsg = positionScore == 4? scoreMsg + '\n': scoreMsg
                             positionScore++
 
-                            scoreMsg = scoreMsg + `*${nameScore}*\n_${parsedMsg[i].msgs} Mensagens_\n\n`
+                            scoreMsg = scoreMsg + `*${nameScore}*\n_${parsedMsg[i].msgs} Mensagens_\n`
                         }
                     }
                 }
