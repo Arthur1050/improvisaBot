@@ -126,6 +126,16 @@ const start = async (bot = new Client()) => {
   })
 
   bot.onGlobalParticipantsChanged(async event => {
+
+    //Reporta o banimento no juri
+    async function reportJuri(autor, alvo, grupo, motivo, alvoNum) {
+      let admGroup = await JSON.parse(fs.readFileSync('./lib/jsons/admGroup.json'))
+
+      await bot.sendTextWithMentions(admGroup[0], `Banimento no grupo ${grupo}\n\n*ADM:* _@${autor.replace('@c.us', '')}_\n*Alvo:* _${alvo}_\n*Alvo cntt:* wa.me/+${alvoNum.replace('@c.us', '')}\n\n*Motivo:* _${motivo}_`)
+      bot.sendText(admGroup[0], 'Use "/Ban help" caso não souber como usar o comando.')
+
+    }
+
     const bkList = JSON.parse(fs.readFileSync('./lib/jsons/bkList.json'))
     const onBkList = bkList.includes(event.who)
     const autor = event.who
@@ -159,7 +169,6 @@ const start = async (bot = new Client()) => {
 
         else if (!onBkList && !vulgobot && newadd == 0) {
           newadd = 1
-          console.log('Antes da boas vindas')
           var perfil = await bot.getProfilePicFromServer(event.who)
           if (perfil == '' || perfil == 'undefined' || perfil == 'ERROR: 401') perfil = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQcODjk7AcA4wb_9OLzoeAdpGwmkJqOYxEBA&usqp=CAU"
           const image = await new canva.Welcome()
@@ -179,7 +188,6 @@ const start = async (bot = new Client()) => {
           .setColor("avatar", "#00100C")
           .setBackground("https://i.ibb.co/gWcKNQW/imagem-2021-07-22-002942.png")
           .toAttachment();
-          console.log('Depois do boas vindas')
           await bot.sendFile(event.chat, `data:image/png;base64,${image.toBuffer().toString('base64')}`, `welcome.png`, text.bemvindo(autorName, name))
           newadd = 0
         }
@@ -211,7 +219,10 @@ const start = async (bot = new Client()) => {
 
     if (event.action == 'remove' && !(event.by == undefined) && !(event.by == botnumber)) {
       try{
-      bot.sendTextWithMentions(event.chat, `Por favor @${event.by.replace('@c.us', '')} , procure usar o comando /ban ao invés de remover manualmente.`)
+        await bot.sendTextWithMentions(event.chat, `Por favor @${event.by.replace('@c.us', '')} , procure usar o comando /ban ao invés de remover manualmente.`)
+
+        reportJuri(event.by, autorName, name, 'Removido manualmente.', event.who)
+
       } catch(err) {console.log(err)}
     }
 
