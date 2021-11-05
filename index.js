@@ -4,15 +4,15 @@ const canva = require ('discord-canvas')
 const text = require('./src/textsend')
 const options = require('./src/options')
 const corpo = require("./body")
-const checkFaceGroup = require('./src/checkFaceGroup')
+const checkFaceGroup = require('./src/faceGroup')
 const moment = require('moment-timezone')
 const Dono = '553499532444@c.us'
 var newadd = 0; var newexit = 0
 const amountMsg = require('./src/bot/amountMsg')
-const nowHours = new Date
 
 //Criar arquivos JSONS caso nn tenha
 if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/bkList.json',[])}
+if (!fs.existsSync('./lib/jsons/conselhoGroup.json')) {fs.outputJSONSync('/lib/jsons/conselhoGroup.json',[])}
 if (!fs.existsSync('./lib/jsons/msgCount.json')) {fs.outputJSONSync('./lib/jsons/msgCount.json',[])}
 if (!fs.existsSync('./lib/jsons/admGroup.json')) {fs.outputJSONSync('./lib/jsons/admGroup.json',[])}
 if (!fs.existsSync('./lib/jsons/grupo.json')) {fs.outputJSONSync('./lib/jsons/grupo.json',[])}
@@ -25,37 +25,42 @@ const msgCount = JSON.parse(msgCountJson)
 // Apaga a pasta de logs do navegador caso exista
 if (fs.existsSync('./logs/Chrome')) {fs.rmdirSync('./logs/Chrome', {recursive: true})}
 
-
 const start = async (bot = new Client()) => {
   console.log('Pronto para começarmos!!')
   
   // Lê e envia anuncios nos grupos
-  setInterval(()=> {
-    let readAnuncio = JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
-    let grupos = JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
+  setInterval(async ()=> {
+    let nowHours = new Date
+    let readAnuncio = await JSON.parse(fs.readFileSync('./lib/jsons/anuncios.json'))
+    let grupos = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
     let nowMinutes = nowHours.getMinutes() < 10? '0' + nowHours.getMinutes().toString(): nowHours.getMinutes()
     let nowDate = nowHours.getHours() + ':' + nowMinutes
 
-    for (i in readAnuncio) {
-      if (readAnuncio[i].hora == nowDate) {
+    var anuncio = await readAnuncio.find( e =>  e.hora == nowDate)
+
+    if (!(anuncio == undefined)) {
         for (t in grupos) {
-          bot.sendText(grupos[t], readAnuncio[i].menssagem)
+          bot.sendText(grupos[t], anuncio.menssagem)
         }
-      }
     }
 
-  }, 30000)
+  }, 40000)
 
   // Verifica o ùltimo post do grupo do facebook
-  //checkFaceGroup(bot)
-  /*setInterval(() => {
-    checkFaceGroup(bot)
-  }, 5000)*/
+  setInterval(() => {
+    let nowHours = new Date
+
+    if (nowHours.getHours() >= 10) {
+      checkFaceGroup.fetchfaceGroup(bot)
+    }
+  }, 20 * 60000)
 
 
   //Lembrete de tomar água
     setInterval(async ()=> {
-      if (nowHours.getHours() > 7) {
+      let nowHours = new Date
+
+      if (nowHours.getHours() >= 7) {
         let grupos = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
         
         let groupSender = Math.random()

@@ -729,6 +729,13 @@ module.exports = corpo = async (bot, menssagem) => {
                 cornaoGuerreiro()
             break
 
+            case 'conselho':
+                const conselhoGroup = await JSON.parse(fs.readFileSync('./lib/jsons/conselhoGroup.json'))
+                await conselhoGroup.push(from)
+                fs.writeFileSync('./lib/jsons/conselhoGroup.json', JSON.stringify(conselhoGroup))
+                bot.reply(from, 'Grupo do conselho registrado.', id)
+            break
+
             case 'match':
                 if (!isGroupMsg) {return bot.reply(from, 'Comandos exclusivo pra grupos', id)}
 
@@ -738,7 +745,7 @@ module.exports = corpo = async (bot, menssagem) => {
                     if (matchArray.includes(autor)) {
                         return true
                     }
-                    // Caso não for recente, armazena no matchArray e programa para ser removido dps de 3 horas
+                    // Caso não for recente, armazena no matchArray e programa para ser removido dps de 1 hora
                     else {
                         matchArray.push(autor)
                         setTimeout(()=> {
