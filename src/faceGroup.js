@@ -25,12 +25,12 @@ exports.fetchfaceGroup = async (bot) => {
 
   console.log(dataLastPub.temp)
 
-  if (true/* dataLastPub.temp.includes(' h') */) {
+  if (dataLastPub.temp.includes(' h')) {
 
       let hour = parseInt(dataLastPub.temp.replace(' h', ''))
       console.log('Hora do Último post: ' + hour)
 
-      if (true/* hour >= 3 */) {
+      if (hour >= 3) {
           var aviso = '🚨*INATIVIDADE NO GRUPO*🚨\n\n'
 
           await bot.getGroupMembers(conselhoGroup[0]).then((res) => {
