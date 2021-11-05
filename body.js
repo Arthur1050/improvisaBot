@@ -28,6 +28,7 @@ const { fit, format } = require('sharp')
 const { xml } = require('cheerio/lib/static')
 const { each } = require('cheerio/lib/api/traversing')
 const RGB = (texto, Color) => {return !Color ? chalk.green(texto) : chalk.keyword(Color)(texto)}
+const matchArray = []
 
 /*function formatTemp (temps){
     var tempToSeconds = temps/60
@@ -684,7 +685,7 @@ module.exports = corpo = async (bot, menssagem) => {
                             scoreMsg = positionScore == 4? scoreMsg + '\n': scoreMsg
                             positionScore++
 
-                            scoreMsg = scoreMsg + `*${nameScore}*\n_${parsedMsg[i].msgs} Mensagens_\n`
+                            scoreMsg = scoreMsg + `*${nameScore}*\n⤷_${parsedMsg[i].msgs} Mensagens_\n`
                         }
                     }
                 }
@@ -731,19 +732,48 @@ module.exports = corpo = async (bot, menssagem) => {
             case 'match':
                 if (!isGroupMsg) {return bot.reply(from, 'Comandos exclusivo pra grupos', id)}
 
-                async function tinderMatch() {
-                    let searchMemberMatch = await bot.getGroupMembers(from)
-                    let indexMatch = Math.floor(Math.random() * searchMemberMatch.length)
-                    let randomMatch = await bot.getContact(searchMemberMatch[indexMatch].id)
+                // Verifica se o sender é um match recente
+                function recentMatch(autor) {
 
-                    if (randomMatch.isMe == false) {
-                        bot.sendFileFromUrl(from, "https://i.imgur.com/plzsH7o.png", 'matchImprovisado.jpg', 
-                        `「❤️‍🔥」\n @${sender.id.replace('@c.us', '')} « deu *MATCH*❤️ com » @${randomMatch.id.replace('@c.us', '')}`, id)
+                    if (matchArray.includes(autor)) {
+                        return true
                     }
-                    else {tinderMatch()}
+                    // Caso não for recente, armazena no matchArray e programa para ser removido dps de 3 horas
+                    else {
+                        matchArray.push(autor)
+                        setTimeout(()=> {
+                            let index = matchArray.findIndex(e => e == autor)
+                            matchArray.splice(index, 1)
+                        }, 60 * 60000)
+                    }
+                }
+
+                async function tinderMatch() {
+
+                    if (!recentMatch(sender.id)){
+                        let searchMemberMatch = await bot.getGroupMembers(from)
+                        let indexMatch = Math.floor(Math.random() * searchMemberMatch.length)
+                        let randomMatch = await bot.getContact(searchMemberMatch[indexMatch].id)
+
+
+                        if (randomMatch.isMe == false) {
+                            bot.sendFileFromUrl(from, "https://i.imgur.com/plzsH7o.png", 'matchImprovisado.jpg', 
+                            `「❤️‍🔥」\n @${sender.id.replace('@c.us', '')} « deu *MATCH*❤️ com » @${randomMatch.id.replace('@c.us', '')}`, id)
+                        }
+                        else {tinderMatch()}
+                    }
+                    else {
+                        bot.reply(from, '_Primeiro troque ideia com seu match recente um pouco_ :)', id)
+                    }
                 }
 
                 tinderMatch()
+            break
+
+            case 'test':
+                const verifiedFaceGroup = require('./src/faceGroup.js')
+
+                verifiedFaceGroup.verification()
             break
 
             case 'perfil':
