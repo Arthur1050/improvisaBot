@@ -12,7 +12,7 @@ const amountMsg = require('./src/bot/amountMsg')
 
 //Criar arquivos JSONS caso nn tenha
 if (!fs.existsSync('./lib/jsons/bkList.json')) {fs.outputJSONSync('./lib/jsons/bkList.json',[])}
-if (!fs.existsSync('./lib/jsons/conselhoGroup.json')) {fs.outputJSONSync('/lib/jsons/conselhoGroup.json',[])}
+if (!fs.existsSync('./lib/jsons/conselhoGroup.json')) {fs.outputJSONSync('./lib/jsons/conselhoGroup.json',[])}
 if (!fs.existsSync('./lib/jsons/msgCount.json')) {fs.outputJSONSync('./lib/jsons/msgCount.json',[])}
 if (!fs.existsSync('./lib/jsons/admGroup.json')) {fs.outputJSONSync('./lib/jsons/admGroup.json',[])}
 if (!fs.existsSync('./lib/jsons/grupo.json')) {fs.outputJSONSync('./lib/jsons/grupo.json',[])}
