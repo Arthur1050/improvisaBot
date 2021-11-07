@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra')
+const options = require('./options')
 
 exports.fetchfaceGroup = async (bot) => {
     
@@ -7,12 +8,12 @@ exports.fetchfaceGroup = async (bot) => {
 
   if (conselhoGroup.length == 0) {return console.log('Sem grupo do conselho definido.')}
 
-  const browser = await puppeteer.launch(/* {headless: false} */);
+  const browser = await puppeteer.launch(options());
   const page = await browser.newPage();
   await page.goto('https://www.facebook.com/groups/aestheticimprovisado?sorting_setting=CHRONOLOGICAL', {waitUntil: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']});
 
   // Abrir o console da pag
-  const dataLastPub = await page.evaluate(() => {
+  /* const dataLastPub = await page.evaluate(async() => {
 
       const pub = document.querySelector('[role="feed"] .k4urcfbm')
       
@@ -20,14 +21,18 @@ exports.fetchfaceGroup = async (bot) => {
       const lastPubHour = pub.querySelector('.g5ia77u1 span').textContent
 
       return {temp: lastPubHour}
-    })
+    }) */
+
+  const dataLastPub = await page.$('[role="feed"] .k4urcfbm')
+  const dataLastPubHour = await dataLastPub.$eval('.g5ia77u1 span', (e) =>{return e.textContent})
+
   await browser.close();
 
-  console.log(dataLastPub.temp)
+  console.log(dataLastPubHour)
 
-  if (dataLastPub.temp.includes(' h')) {
+  if (dataLastPubHour.includes(' h')) {
 
-      let hour = parseInt(dataLastPub.temp.replace(' h', ''))
+      let hour = parseInt(dataLastPubHour.replace(' h', ''))
       console.log('Hora do Último post: ' + hour)
 
       if (hour >= 3) {

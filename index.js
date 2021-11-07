@@ -53,7 +53,7 @@ const start = async (bot = new Client()) => {
     if (nowHours.getHours() >= 10) {
       checkFaceGroup.fetchfaceGroup(bot)
     }
-  }, 20 * 60000)
+  }, 10000/* 20 * 60000 */)
 
 
   //Lembrete de tomar água
