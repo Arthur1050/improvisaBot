@@ -23,16 +23,19 @@ exports.fetchfaceGroup = async (bot) => {
       return {temp: lastPubHour}
     }) */
 
-  const dataLastPub = await page.$('[role="feed"] .k4urcfbm')
-  const dataLastPubHour = await dataLastPub.$eval('.g5ia77u1 span', (e) =>{return e.textContent})
+  const elementLastPub = await page.$('[role="feed"] .k4urcfbm')
+  const elementLastPubHour = await elementLastPub.$('.g5ia77u1 span')
+  const pubHour = await page.evaluate((e) => {
+    return e.textContent
+  }, elementLastPubHour)
 
   await browser.close();
 
-  console.log(dataLastPubHour)
+  console.log(pubHour)
 
-  if (dataLastPubHour.includes(' h')) {
+  if (pubHour.includes(' h')) {
 
-      let hour = parseInt(dataLastPubHour.replace(' h', ''))
+      let hour = parseInt(pubHour.replace(' h', ''))
       console.log('Hora do Último post: ' + hour)
 
       if (hour >= 3) {
