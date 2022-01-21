@@ -47,13 +47,16 @@ const start = async (bot = new Client()) => {
   }, 40000)
 
   // Verifica o ùltimo post do grupo do facebook
+  checkFaceGroup.fetchfaceGroup(bot)
+
   setInterval(() => {
     let nowHours = new Date
-
-    if (nowHours.getHours() >= 10) {
+    
+    /* if (nowHours.getHours() >= 10) {
       checkFaceGroup.fetchfaceGroup(bot)
-    }
-  }, 10000/* 20 * 60000 */)
+      console.log('kmdakd')
+    }*/
+  }, 20 * 60000)
 
 
   //Lembrete de tomar água
