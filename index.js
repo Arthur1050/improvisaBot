@@ -47,8 +47,7 @@ const start = async (bot = new Client()) => {
   }, 40000)
 
   // Verifica o ùltimo post do grupo do facebook
-  checkFaceGroup.fetchfaceGroup(bot)
-
+  // Depois mecho nessa parte dnv
   setInterval(() => {
     let nowHours = new Date
     
@@ -131,6 +130,10 @@ const start = async (bot = new Client()) => {
 
     //Verificar quantidade de mensagens
     amountMsg(menssagem, bot)
+  })
+
+  bot.onAddedToGroup(chat => {
+    bot.sendText(chat.id, text.novogrupo())
   })
 
   bot.onGlobalParticipantsChanged(async event => {

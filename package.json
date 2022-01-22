@@ -10,7 +10,7 @@
   "author": "Arthur T.",
   "license": "MIT",
   "dependencies": {
-    "@open-wa/wa-automate": "^4.23.6",
+    "@open-wa/wa-automate": "^4.28.13",
     "@vitalets/google-translate-api": "^7.0.0",
     "axios": "^0.21.1",
     "chalk": "^4.1.1",
@@ -21,7 +21,7 @@
     "moment-timezone": "^0.5.33",
     "one-liner-joke": "^1.2.2",
     "parse5": "^6.0.1",
-    "puppeteer": "^10.1.0",
+    "puppeteer": "^10.4.0",
     "remove-accents": "^0.4.2",
     "request": "^2.88.2",
     "sharp": "^0.28.3",
@@ -29,7 +29,7 @@
     "translate": "^1.2.3",
     "typedoc-plugin-pages": "^1.1.0",
     "yt-search": "^2.9.0",
-    "ytdl-core": "^4.9.1"
+    "ytdl-core": "^4.10.0"
   },
   "directories": {
     "lib": "lib"

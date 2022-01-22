@@ -1,4 +1,4 @@
-exports.novogrupo = () => {return 'ImprovisaBot ON🤖\nUse "/menu" para falar comigo.'}
+exports.novogrupo = () => {return 'ImprovisaBot ON🤖\nUse "/menu" para falar comigo.\n Saudades? <3'}
 
 exports.listanegra = (autor) => {return `@${autor.replace('@c.us', '')}\nVeja bem, seu numero está na listinha negra do grupo. Lamento...`}
 

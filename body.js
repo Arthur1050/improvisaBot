@@ -27,6 +27,7 @@ const { width, height } = require('@open-wa/wa-automate/dist/config/puppeteer.co
 const { fit, format } = require('sharp')
 const { xml } = require('cheerio/lib/static')
 const { each } = require('cheerio/lib/api/traversing')
+const { number } = require('sharp/lib/is')
 const RGB = (texto, Color) => {return !Color ? chalk.green(texto) : chalk.keyword(Color)(texto)}
 const matchArray = []
 
@@ -631,21 +632,22 @@ module.exports = corpo = async (bot, menssagem) => {
                 var arrayMeme = []
                 bot.reply(from, 'Buscando meme...', id)
 
-                for (let i = 1; i <= 4; i++) {
-                    const $meme = await axios.get(`https://br.ifunny.co/top-memes/month/page${i}`, {headers:{'User-Agent' : uaOverride}}).then((res) => {
+                for (let i = 1; i < 4; i++) {
+                    let url = await 'https://br.ifunny.co/top-memes/month/page' + i
+                    const $meme = await axios.get(url, {headers:{'User-Agent' : uaOverride}}).then((res) => {
                         return cheerio.load(res.data)
                     })
 
-                    $meme('._3brC ._4QrZ').each((index, element) =>{
-                        var imageMeme = $meme('.l5Cl img', element).attr('data-src')
+                    $meme('._3ZEF').each((index, element) =>{
+                        var imageMeme = $meme('img', element).attr('data-src')
 
                         if (!(imageMeme == undefined)) {
                             arrayMeme.push(imageMeme)
                         }
                     })
                 }
-                let randomIndexMeme = Math.floor(Math.random() * arrayMeme.length)
-
+                let randomIndexMeme = await Math.floor(Math.random() * arrayMeme.length)
+                
                 bot.sendFileFromUrl(from, arrayMeme[randomIndexMeme], 'Bot_Improvisado_Memes_@arthur_tm_.jpeg', '_Memes do iFunny_')
             break
 
