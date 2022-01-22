@@ -22,9 +22,9 @@ module.exports = amountMsg = (msg, bot) =>{
     try{
     for (let i in countMsg) {
         if (i > 0) {
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 10)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 100)
-            searchMsg(countMsg[i].msgs, countMsg[i].id, 250)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 50)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 150)
+            searchMsg(countMsg[i].msgs, countMsg[i].id, 350)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 500)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 800)
             searchMsg(countMsg[i].msgs, countMsg[i].id, 1000)
