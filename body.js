@@ -492,6 +492,28 @@ module.exports = corpo = async (bot, menssagem) => {
                             } else {bot.reply(from, 'Comando exclussivo do dono', id)}
             break
 
+            case 'ghost':
+                if (!isGroupMsg) {return bot.reply(from, text.cmdGroups(), id)}
+                var msgGhost = '*Membros ghost:\n\n*'
+                
+                (async () => {
+                    //Pega um array de membros com msg registrada e o segundo de membros presentes no grupo
+                    var activeMembers = await JSON.parse(fs.readFileSync('./lib/jsons/msgCount.json'))
+                    var groupMembers = await bot.getGroupMembers(from)
+
+                    for (let i in groupMembers) {
+                        // Entra no laço 'se' caso um membro do grupo nn esteja no array de membros com msg registrada
+                        if (!activeMembers.includes(groupMembers[i].id)) {
+                            msgGhost = msgGhost + '@' + groupMembers[i].id.replace('@c.us', '') + '\n'
+                        }
+
+                    }
+
+                    await bot.reply(from, msgGhost, id)
+                })();
+
+            break
+
             case 'snaptube':
                 bot.reply(from, text.snaptube(), id)
             break

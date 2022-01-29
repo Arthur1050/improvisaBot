@@ -72,9 +72,9 @@ const start = async (bot = new Client()) => {
         let randomMembro = membrosGroup[Math.floor(Math.random() * membrosGroup.length)].id
 
         bot.sendTextWithMentions(grupos[groupSender], 
-          `Olá @${randomMembro.replace('@c.us', '')}\nJá se hidratou adequadamente hoje?\nVamos! Beba um copo de água❤️`)
+          `Olá @${randomMembro.replace('@c.us', '')}\nJá se hidratou adequadamente hoje?\nBeba um copo de água aí pow❤️`)
       }
-    }, 60 * 60000)
+    }, 180 * 60000)
   
 
   //Força recarregamento
