@@ -59,3 +59,5 @@ exports.unbanHelp = () => {return `Basta você selecionar a mensagem do "banido"
 exports.tempbanHelp = () => {return `Esse modelo de comando é mais simples do que parece. Primeiro mencione o alvo (ou marque a mensagem do alvo como explicado no help do "/ban"), e logo depois defina o tempo (EM MINUTOS) que o alvo ficara de castigo. No exemplo à cima eu defini 1 minuto como tempo de castigo.`}
 
 exports.infoSongRequest = (titleSong, tempSong, dateSong, viewsSong) => {return `🔍≫ *Resultado da pesquisa:*\n\n*» Título:* ${titleSong}\n\n*» Duração:* ${tempSong} segundos\n\n*» Data:* ${dateSong}\n\n*» Visualizações:* ${viewsSong}\n\n🎵≫ _*Download em andamento... Aguarde.*_`}
+
+exports.ghostMotivation = (ghost) => {return `Oii @${ghost.replace('@c.us', '')}\nPercebi que está meio(a) quieto(a)...\nDeixa de timidez e interage com nós! :D\nComo vai?`}

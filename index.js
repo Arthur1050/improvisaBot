@@ -65,8 +65,8 @@ const start = async (bot = new Client()) => {
       if (nowHours.getHours() >= 7) {
         let grupos = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
         
-        let groupSender = Math.random()
-        groupSender = groupSender >= 0.50 ? 1 : 0
+        let groupSender = Math.floor(grupos.length * Math.random())
+        /* groupSender = groupSender >= 0.50 ? 1 : 0 */
 
         const membrosGroup = await bot.getGroupMembers(grupos[groupSender])
         let randomMembro = membrosGroup[Math.floor(Math.random() * membrosGroup.length)].id
@@ -75,6 +75,32 @@ const start = async (bot = new Client()) => {
           `Olá @${randomMembro.replace('@c.us', '')}\nJá se hidratou adequadamente hoje?\nBeba um copo de água aí pow❤️`)
       }
     }, 180 * 60000)
+
+
+  //Cita um ghost e motiva-o a interagir
+  setInterval(async ()=> {
+    let grupos = await JSON.parse(fs.readFileSync('./lib/jsons/grupo.json'))
+    let randomGrupo = Math.floor(Math.random() * grupos.length)
+    let groupSend = grupos[randomGrupo]
+
+    let membrosAtivos = await JSON.parse(fs.readFileSync('./lib/jsons/msgCount.json'))
+    let membrosAtivosID = []
+    for (let i in membrosAtivos) {membrosAtivosID.push(membrosAtivos[i].id)}
+
+    let groupSendMembers = await bot.getGroupMembers(groupSend)
+    let ghostMembers = []
+
+    for (let i in groupSendMembers) {
+      if (!membrosAtivosID.includes(groupSendMembers[i].id)) {
+        ghostMembers.push(groupSendMembers[i].id)
+      }
+    }
+
+    let randomGhostMember = ghostMembers[Math.floor(Math.random() * ghostMembers.length)]
+
+    await bot.sendTextWithMentions(groupSend, text.ghostMotivation(randomGhostMember))
+
+  }, 120 * 60000)
   
 
   //Força recarregamento
