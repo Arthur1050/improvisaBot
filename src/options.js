@@ -1,6 +1,9 @@
 module.exports = options = (start) => {
     const options = {
 		authTimeout: 0,
+		/* logging:[{
+			"type":"console"
+		}], */
 		cacheEnabled: false,
 		//defaultViewport: null,
 		disableSpins: true,

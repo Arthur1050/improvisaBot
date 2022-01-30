@@ -493,23 +493,26 @@ module.exports = corpo = async (bot, menssagem) => {
             break
 
             case 'ghost':
+                if (!isAdemesGroup) {return bot.reply(from, 'Sem permissão para usar o comando.', id)}
                 if (!isGroupMsg) {return bot.reply(from, text.cmdGroups(), id)}
-                var msgGhost = '*Membros ghost:\n\n*'
+                var msgGhost = '*「👻」Membros ghost:*\n\n';
                 
                 (async () => {
                     //Pega um array de membros com msg registrada e o segundo de membros presentes no grupo
                     var activeMembers = await JSON.parse(fs.readFileSync('./lib/jsons/msgCount.json'))
+                    var arrayActiveMembers = []
+                    for (let i in activeMembers) {arrayActiveMembers.push(activeMembers[i].id)}
                     var groupMembers = await bot.getGroupMembers(from)
 
                     for (let i in groupMembers) {
                         // Entra no laço 'se' caso um membro do grupo nn esteja no array de membros com msg registrada
-                        if (!activeMembers.includes(groupMembers[i].id)) {
+                        if (!arrayActiveMembers.includes(groupMembers[i].id)) {
                             msgGhost = msgGhost + '@' + groupMembers[i].id.replace('@c.us', '') + '\n'
                         }
 
                     }
-
-                    await bot.reply(from, msgGhost, id)
+                    console.log(msgGhost)
+                    await bot.sendTextWithMentions(from, msgGhost, id)
                 })();
 
             break
